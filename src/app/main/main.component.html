@@ -1,0 +1,32 @@
+<div class="flex-container">
+    <div class="flex-left">
+        <h2>Parameters</h2>
+        <div class="grid-container">
+            attraction distance
+            <input type="number" [(ngModel)]="this.attractionDistance" [disabled]="this.isRunning" />
+            prune distance
+            <input type="number" [(ngModel)]="this.pruneDistance" [disabled]="this.isRunning" />
+            segment length
+            <input type="number" [(ngModel)]="this.segmentLength" [disabled]="this.isRunning" />
+            <input type="checkbox" [(ngModel)]="this.showAttractionZone" (change)="this.draw($event)" />
+            Show Attraction Zone        
+            <input type="checkbox" [(ngModel)]="this.showPruneZone" (change)="this.draw($event)" />
+            Show Prune Zone
+            <input type="number" [(ngModel)]="this.numAttractors" [disabled]="this.isRunning"/>
+            <button (click)="this.generateRandomAttractors($event)" [disabled]="this.isRunning">Random attractors</button>  
+            <input type="number" [(ngModel)]="this.numNodes" [disabled]="this.isRunning"/>
+            <button (click)="this.generateRandomNodes($event)" [disabled]="this.isRunning">Random nodes</button>   
+        </div>
+        <br>
+        <button (click)="this.clickResetButton($event)">
+            Reset
+        </button>
+        <button (click)="this.clickGoButton($event)" [disabled]="this.isRunning">
+            Go!
+        </button>
+        <br>
+    </div>
+    <div class="flex-right">
+        <canvas #canvas id="canvas" (click)="this.createNewAttractor($event)" (auxclick)="this.createNewNode($event)" (contextmenu)="this.contextMenu($event)"></canvas>
+    </div>
+</div>

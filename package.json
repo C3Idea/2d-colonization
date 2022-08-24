@@ -18,8 +18,11 @@
     "@angular/platform-browser": "^14.1.0",
     "@angular/platform-browser-dynamic": "^14.1.0",
     "@angular/router": "^14.1.0",
+    "@angular/service-worker": "^14.1.0",
+    "kdbush": "^3.0.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
+    "vec2": "^1.6.1",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
@@ -27,6 +30,8 @@
     "@angular/cli": "~14.1.2",
     "@angular/compiler-cli": "^14.1.0",
     "@types/jasmine": "~4.0.0",
+    "@types/kdbush": "^3.0.1",
+    "@types/vec2": "^1.6.1",
     "jasmine-core": "~4.2.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.1.0",
