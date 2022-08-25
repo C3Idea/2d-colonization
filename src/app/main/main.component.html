@@ -3,9 +3,9 @@
         <h2>Parameters</h2>
         <div class="grid-container">
             attraction distance
-            <input type="number" [(ngModel)]="this.attractionDistance" [disabled]="this.isRunning" />
+            <input type="number" [(ngModel)]="this.attractionDistance" [disabled]="this.isRunning" (change)="this.draw($event)" />
             prune distance
-            <input type="number" [(ngModel)]="this.pruneDistance" [disabled]="this.isRunning" />
+            <input type="number" [(ngModel)]="this.pruneDistance" [disabled]="this.isRunning" (change)="this.draw($event)"/>
             segment length
             <input type="number" [(ngModel)]="this.segmentLength" [disabled]="this.isRunning" />
             <input type="checkbox" [(ngModel)]="this.showAttractionZone" (change)="this.draw($event)" />

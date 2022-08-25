@@ -31,7 +31,6 @@ export class MainComponent implements AfterViewInit {
 
   randomAttractors: boolean = false;
 
-  
   constructor() {
   }
 
@@ -132,7 +131,8 @@ export class MainComponent implements AfterViewInit {
   
   private setup(): void {
     this.fixCanvasSize();
-    this.model = new ColonizationModel(1, 1, this.canvas.width, this.canvas.height);
+    const rect = this.canvas.getBoundingClientRect();
+    this.model = new ColonizationModel(Math.floor(rect.width), Math.floor(rect.height));
   }
 
   private fixCanvasSize(): void {

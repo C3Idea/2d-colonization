@@ -3,6 +3,7 @@ import { Node } from "./node";
 import KDBush from "kdbush";
 import { randomVec2 } from "./util";
 import Vec2 from "vec2";
+import { Mask } from "./mask";
 
 export class ColonizationModel {
     x0: number;
@@ -12,16 +13,17 @@ export class ColonizationModel {
     attractors: Array<Attractor>;
     nodes: Array<Node>;
     index: KDBush<Node>;
-    
+    mask: Mask;
 
-    constructor(x0: number, y0: number, x1: number, y1: number) {
-            this.x0    = x0;
-            this.y0    = y0;
-            this.x1    = x1;
-            this.y1    = y1;
-            this.attractors = [];
-            this.nodes      = [];
-            this.index      = new KDBush([]);
+    constructor(width: number, height: number) {
+        this.x0    = 0;
+        this.y0    = 0;
+        this.x1    = width;
+        this.y1    = height;
+        this.attractors = [];
+        this.nodes      = [];
+        this.index      = new KDBush([]);
+        this.mask  = new Mask(width, height);
     }
 
     addNode(node: Node): void {
@@ -106,24 +108,28 @@ export class ColonizationModel {
         return result;
     }
 
-    private nodeIsInsideRectangle(node: Node): boolean {
-        return (node.position.x >= this.x0 && node.position.x <= this.x1 &&
-            node.position.y >= this.y0 && node.position.y <= this.y1);
+    private nodeIsInDomain(node: Node): boolean {
+        const i = Math.floor(node.position.x);
+        const j = Math.floor(node.position.y);
+        return this.mask.at(i, j);
     }
 
     private growNewNodes(segmentLength: number): void {
         for (let node of this.nodes) {
             if (node.isAttracted()) {
                 let newNode = this.getNextNode(node, segmentLength);
-                if (this.nodeIsInsideRectangle(newNode)) {
+                if (this.nodeIsInDomain(newNode)) {
                     newNode.parent = node;
                     let tempNode = node;
                     while (tempNode.parent != undefined) {
                         
                         // When there are multiple child nodes, use the thickest of them all
+                        /*
                         if(tempNode.parent.thickness < tempNode.thickness + .05) {
                             tempNode.parent.thickness = tempNode.thickness + .02;
                         }
+                        */
+                        tempNode.parent.thickness = tempNode.thickness + 0.01;
                         tempNode = tempNode.parent;
                     }
                     this.nodes.push(newNode);
