@@ -2,8 +2,9 @@ import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { ColonizationModel } from '../colonization-model';
 import { Node } from '../node';
 import { Attractor } from '../attractor';
-import { sleep } from '../util';
+import { loadImage, sleep } from '../util';
 import Vec2 from 'vec2';
+import { Mask } from '../mask';
 
 @Component({
   selector: 'app-main',
@@ -28,15 +29,33 @@ export class MainComponent implements AfterViewInit {
   showAttractionZone: boolean = true;
   showPruneZone: boolean = true;
   isRunning: boolean = false;
+  isFresh:   boolean = true;
 
   randomAttractors: boolean = false;
+
+  backgroundColor = 'black';
+  attractionColor = 'green';
+  pruneColor      = 'red';
+  nodeColor       = 'grey';
+  segmentColor    = 'grey';
+
+  allMaskPaths: Array<string> = [
+    "./assets/masks/elipse.png",
+    "./assets/masks/ampersand.png",
+    "./assets/masks/rectas.png"
+  ];
+  maskPath: string = this.allMaskPaths[0];
+  maskImage: HTMLImageElement | undefined;
+
+  private ctx!: CanvasRenderingContext2D | null; 
 
   constructor() {
   }
 
   ngAfterViewInit(): void {
+    this.ctx = this.canvas.getContext('2d');
+    this.fixCanvasSize();
     this.setup();
-    this.drawScene();
   }
 
   draw(event: Event): void {
@@ -47,17 +66,26 @@ export class MainComponent implements AfterViewInit {
 
   private drawScene(): void {
     this.drawBackground();
-    this.drawAttractors();
-    this.drawSegments();
+    this.drawMaskImage();
+    if (this.model) {
+      this.drawAttractors();
+      this.drawSegments();
+    }
   }
 
   private drawBackground() {
-    const ctx = this.canvas.getContext('2d');
-    if (ctx != null) {
-      ctx.beginPath();
-      ctx.fillStyle = 'white';
-      ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-      ctx.closePath();
+    if (this.ctx != null) {
+      this.ctx.beginPath();
+      this.ctx.fillStyle = this.backgroundColor;
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      this.ctx.closePath();
+    }
+  }
+
+  private drawMaskImage() {
+    if (this.ctx != null && this.maskImage != undefined) {
+      this.ctx.drawImage(this.maskImage, 0, 0, this.maskImage.width, this.maskImage.height,
+                                         0, 0, this.canvas.width, this.canvas.height);
     }
   }
 
@@ -68,52 +96,56 @@ export class MainComponent implements AfterViewInit {
   }
 
   private drawAttractor(a: Attractor): void {
-    const ctx = this.canvas.getContext('2d');
-    if (ctx != null) {
+    if (this.ctx != null) {
       if (this.showAttractionZone) {
-        ctx.beginPath();
-        ctx.ellipse(a.position.x, a.position.y, this.attractionDistance, this.attractionDistance, 0, 0, Math.PI * 2);
-        ctx.strokeStyle = 'green';
-        ctx.stroke();
-        ctx.closePath();
+        this.ctx.beginPath();
+        this.ctx.ellipse(a.position.x, a.position.y, this.attractionDistance, this.attractionDistance, 0, 0, Math.PI * 2);
+        this.ctx.strokeStyle = this.attractionColor;
+        this.ctx.closePath();
+        this.ctx.stroke();
       }
       if (this.showPruneZone) {
-        ctx.beginPath();
-        ctx.ellipse(a.position.x, a.position.y, this.pruneDistance, this.pruneDistance, 0, 0, Math.PI * 2);
-        ctx.strokeStyle = 'red';
-        ctx.stroke();
-        ctx.closePath();
+        this.ctx.beginPath();
+        this.ctx.ellipse(a.position.x, a.position.y, this.pruneDistance, this.pruneDistance, 0, 0, Math.PI * 2);
+        this.ctx.strokeStyle = this.pruneColor;
+        this.ctx.closePath();
+        this.ctx.stroke();
       }
     }
   }
 
   private drawSegments(): void {
     for (let node of this.model.nodes) {
-      if (!this.isRunning) {
-        this.drawNode(node);
-      }
       this.drawNode(node);
     }
   }
   
   private drawNode(node: Node): void {
-    const ctx = this.canvas.getContext('2d');
-    if (ctx != null) {
-      ctx.beginPath();
-      ctx.ellipse(node.position.x, node.position.y, (1 + node.thickness) / 2, (1 + node.thickness) / 2, 0, 0, Math.PI * 2);
-      ctx.fillStyle = 'black';
-      ctx.closePath();
-      ctx.fill();
+    if (this.ctx != null) {
+      if (!this.isRunning && this.isFresh) {
+        this.ctx.beginPath();
+        this.ctx.ellipse(node.position.x, node.position.y, 3, 3, 0, 0, Math.PI * 2);
+        this.ctx.fillStyle = this.nodeColor;
+        this.ctx.closePath();
+        this.ctx.fill();
+      }
+      else {
+        this.ctx.beginPath();
+        this.ctx.ellipse(node.position.x, node.position.y, (1 + node.thickness) / this.segmentLength, (1 + node.thickness) / this.segmentLength, 0, 0, Math.PI * 2);
+        this.ctx.fillStyle = this.nodeColor;
+        this.ctx.closePath();
+        this.ctx.fill();
+      }
       if (node.parent != undefined) {
         // Draw segment between node and node.parent
-        ctx.moveTo(node.position.x, node.position.y);
-        ctx.lineTo(node.parent.position.x, node.parent.position.y);
-        ctx.lineWidth = 1 + node.parent.thickness;
+        this.ctx.moveTo(node.position.x, node.position.y);
+        this.ctx.lineTo(node.parent.position.x, node.parent.position.y);
+        this.ctx.lineWidth = 1 + node.parent.thickness;
         //ctx.lineWidth = 1;
-        ctx.strokeStyle = 'black';
-        ctx.closePath();
-        ctx.stroke();
-        ctx.lineWidth = 1;
+        this.ctx.strokeStyle = this.segmentColor;
+        this.ctx.closePath();
+        this.ctx.stroke();
+        this.ctx.lineWidth = 1;
       }
     }
   }
@@ -130,9 +162,28 @@ export class MainComponent implements AfterViewInit {
   }
   
   private setup(): void {
-    this.fixCanvasSize();
+    this.isRunning = false;
+    this.isFresh = true;
     const rect = this.canvas.getBoundingClientRect();
-    this.model = new ColonizationModel(Math.floor(rect.width), Math.floor(rect.height));
+    this.loadMaskImage().then(result => {
+      if (result) {
+        this.maskImage = result;
+        if (this.ctx != null) {
+          this.ctx.drawImage(this.maskImage, 0, 0, this.maskImage.width, this.maskImage.height,
+                                             0, 0, this.canvas.width, this.canvas.height);
+          const data: ImageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+          const mask = Mask.fromImageData(data);
+          if (mask) {
+            this.model = new ColonizationModel(mask.width, mask.height, mask);
+          }
+        }
+        this.drawScene();
+      }
+    });
+  }
+
+  private async loadMaskImage() {
+    return loadImage(this.maskPath);
   }
 
   private fixCanvasSize(): void {
@@ -146,6 +197,7 @@ export class MainComponent implements AfterViewInit {
   }
 
   async run(): Promise<void> {
+    this.isFresh = false;
     while (true) {
       this.drawScene();
       if (!this.model.step(this.attractionDistance, this.pruneDistance, this.segmentLength)) {
@@ -164,7 +216,9 @@ export class MainComponent implements AfterViewInit {
     let a = new Attractor();
     a.position = new Vec2(x, y);
     this.model.addAtractor(a);
-    this.drawScene();
+    if (!this.isRunning) {
+      this.drawScene();
+    }
   }
 
   createNewNode(event: MouseEvent): void {
@@ -174,7 +228,9 @@ export class MainComponent implements AfterViewInit {
     let n = new Node();
     n.position = new Vec2(x, y);
     this.model.addNode(n);
-    this.drawScene();
+    if (!this.isRunning) {
+      this.drawScene();
+    }
   }
 
   contextMenu(event: Event): boolean {
@@ -182,14 +238,19 @@ export class MainComponent implements AfterViewInit {
   }
 
   generateRandomAttractors(event: Event) {
-    this.model.attractors = Attractor.getRandomList(this.numAttractors,
-      this.model.x0, this.model.y0, this.model.x1, this.model.y1);
+    this.model.randomizeInteriorAttractors(this.numAttractors);
     this.drawScene();
   }
 
   generateRandomNodes(event: Event) {
-    this.model.nodes = Node.getRandomList(this.numNodes,
-      this.model.x0, this.model.y0, this.model.x1, this.model.y1);
+    this.model.randomizeInteriorNodes(this.numNodes);
     this.drawScene();
   }
+
+  maskSelectChange(event: Event) {
+    const index = (event.target as HTMLSelectElement).selectedIndex;
+    this.maskPath = this.allMaskPaths[index];
+    this.setup();
+  }
+
 }

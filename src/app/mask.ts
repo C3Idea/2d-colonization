@@ -1,28 +1,39 @@
 export class Mask {
-    rows:  number;
-    cols: number;
+    width:  number;
+    height: number;
     private data: Array<Array<boolean>>;
 
     constructor(width: number, height: number) {
-        this.rows = width;
-        this.cols = height;
-        this.data = Mask.ones(this.rows, this.cols);
-        console.log(this);
+        this.height = height;
+        this.width  = width;
+        this.data   = Mask.ones(this.width, this.height);
     }
 
-    at(i: number, j: number): boolean {
-        console.log(this.rows, this.cols);
-        if (i >= 0 && i < this.rows && j >= 0 && j < this.cols) {
-            return this.data[i][j];
-        }
-        else {
-            console.log(i, j);
+    at(x: number, y: number): boolean {
+        if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
+            return this.data[x][y];
         }
         return false;
     }
 
-    static ones(rows: number, cols: number): Array<Array<boolean>> {
-        return Array.from(Array(rows), _ => Array(cols).fill(true));
+    private static ones(width: number, height: number): Array<Array<boolean>> {
+        return Array.from(Array(width), _ => Array(height).fill(true));
     }
+
+    static fromImageData(data: ImageData): Mask | undefined {
+        const height = data.height;
+        const width  = data.width;
+        let mask = new Mask(width, height);
+        for (let k = 0; k < data.data.length; k += 4) {
+            const x = (k / 4) % mask.width;
+            const y = Math.floor((k / 4) / mask.width);
+            if (data.data[k] == 0) {
+                mask.data[x][y] = false;
+            }
+        }
+        return mask;
+    };
+
+
 
 }

@@ -15,7 +15,7 @@ export class ColonizationModel {
     index: KDBush<Node>;
     mask: Mask;
 
-    constructor(width: number, height: number) {
+    constructor(width: number, height: number, mask: Mask | undefined = undefined) {
         this.x0    = 0;
         this.y0    = 0;
         this.x1    = width;
@@ -23,23 +23,20 @@ export class ColonizationModel {
         this.attractors = [];
         this.nodes      = [];
         this.index      = new KDBush([]);
-        this.mask  = new Mask(width, height);
+        if (mask != undefined) {
+            this.mask = mask;
+        }
+        else {
+            this.mask  = new Mask(width, height);
+        }
     }
 
     addNode(node: Node): void {
         this.nodes.push(node);
     }
 
-    randomNodes(n: number): void {
-        this.nodes = Node.getRandomList(n, this.x0, this.y0, this.x1, this.y1);
-    }
-
     addAtractor(attractor: Attractor): void {
         this.attractors.push(attractor);
-    }
-
-    randomAttractors(n: number): void {
-        this.attractors = Attractor.getRandomList(n, this.x0, this.y0, this.x1, this.y1);
     }
 
     step(attractionDistance: number, pruneDistance: number, segmentLength: number): boolean {
@@ -108,17 +105,17 @@ export class ColonizationModel {
         return result;
     }
 
-    private nodeIsInDomain(node: Node): boolean {
-        const i = Math.floor(node.position.x);
-        const j = Math.floor(node.position.y);
-        return this.mask.at(i, j);
+    private pointIsInside(p: Vec2): boolean {
+        const x = Math.floor(p.x);
+        const y = Math.floor(p.y);
+        return this.mask.at(x, y);
     }
 
     private growNewNodes(segmentLength: number): void {
         for (let node of this.nodes) {
             if (node.isAttracted()) {
                 let newNode = this.getNextNode(node, segmentLength);
-                if (this.nodeIsInDomain(newNode)) {
+                if (this.pointIsInside(newNode.position)) {
                     newNode.parent = node;
                     let tempNode = node;
                     while (tempNode.parent != undefined) {
@@ -186,5 +183,40 @@ export class ColonizationModel {
             } 
         }
     }
+
+    randomizeInteriorAttractors(n: number) {
+        if (this.mask) {
+            this.attractors = new Array<Attractor>(n);
+            for (let i = 0; i < n; i++) {
+                let pos = new Vec2(0, 0);
+                let valid = false;
+                while (!valid) {
+                    pos = randomVec2(0, 0, this.mask.width, this.mask.height);
+                    valid = this.pointIsInside(pos);
+                }
+                let a = new Attractor();
+                a.position = pos;
+                this.attractors[i] = a;
+            }
+        }
+    }
+
+    randomizeInteriorNodes(n: number) {
+        if (this.mask) {
+            this.nodes = new Array<Node>(n);
+            for (let i = 0; i < n; i++) {
+                let pos = new Vec2(0, 0);
+                let valid = false;
+                while (!valid) {
+                    pos = randomVec2(0, 0, this.mask.width, this.mask.height);
+                    valid = this.pointIsInside(pos);
+                }
+                let node = new Node();
+                node.position = pos;
+                this.nodes[i] = node;
+            }
+        }
+    }
+
 
 }

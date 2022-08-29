@@ -22,7 +22,14 @@
       "es2020",
       "dom"
     ],
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    /*
+    "paths": {
+      "util": ["node_modules/util/"],
+      "stream": ["node_modules/stream-browserify/"],
+      "zlib": ["node_modules/zlib/"]
+    }
+    */
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

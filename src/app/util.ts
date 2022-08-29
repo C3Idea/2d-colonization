@@ -13,3 +13,14 @@ export function randomVec2(x0: number, y0: number, x1: number, y1: number): Vec2
 export function sleep(miliseconds: number) {
   return new Promise(resolve => setTimeout(resolve, miliseconds));
 }
+
+export async function loadImage(path: string): Promise<HTMLImageElement> {
+  let img = new Image();
+  const imgLoadPromise = new Promise(resolve => {
+    img = new Image();
+    img.onload = resolve;
+    img.src = path;
+  });
+  await imgLoadPromise;
+  return img;
+}

@@ -2,6 +2,12 @@
     <div class="flex-left">
         <h2>Parameters</h2>
         <div class="grid-container">
+            mask
+            <select [disabled]="this.isRunning" (change)="this.maskSelectChange($event)">
+                <option value="0">elipse</option>
+                <option value="1">ampersand</option>
+                <option value="2">rectas</option>
+            </select>
             attraction distance
             <input type="number" [(ngModel)]="this.attractionDistance" [disabled]="this.isRunning" (change)="this.draw($event)" />
             prune distance
