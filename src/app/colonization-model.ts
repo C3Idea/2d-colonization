@@ -68,9 +68,27 @@ export class ColonizationModel {
     }
 
     private getNodesWithinDistance(a: Attractor, distance: number): Array<Node> {
-        return this.index.within(
-            a.position.x, a.position.y, distance
-        ).map(id => this.nodes[id]);
+        let result = [];
+        let temp = this.index.within(a.position.x, a.position.y, distance).map(id => this.nodes[id]);
+        for (let n of temp) {
+            if (this.segmentIsInside(a.position, n.position)) {
+                result.push(n);
+            }
+        }
+        return result;
+    }
+
+    private segmentIsInside(p1: Vec2, p2: Vec2): boolean {
+        let n = 100;
+        let l = 1.0 / n;
+        for (let i = 1; i < n; i++) {
+            const lambda = i * l;
+            let p3 = p1.multiply(lambda, true).add(p2.multiply(1 - lambda, true));
+            if (!this.pointIsInside(p3)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private getRelativeNeighborNodes(a: Attractor, attractionDistance: number): Array<Node> {
@@ -119,14 +137,10 @@ export class ColonizationModel {
                     newNode.parent = node;
                     let tempNode = node;
                     while (tempNode.parent != undefined) {
-                        
                         // When there are multiple child nodes, use the thickest of them all
-                        /*
                         if(tempNode.parent.thickness < tempNode.thickness + .05) {
                             tempNode.parent.thickness = tempNode.thickness + .02;
                         }
-                        */
-                        tempNode.parent.thickness = tempNode.thickness + 0.01;
                         tempNode = tempNode.parent;
                     }
                     this.nodes.push(newNode);
