@@ -5,10 +5,12 @@ import { randomVec2, random } from './util';
 export class Attractor {
     position: Vec2;
     nodes: Array<Node>;
+    reached: boolean;
     
     constructor() {
         this.position = new Vec2(0, 0);
         this.nodes    = [];
+        this.reached  = false;
     }
 
     attracts(): boolean {

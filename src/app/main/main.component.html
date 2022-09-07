@@ -2,22 +2,27 @@
     <div class="flex-left">
         <h2>Parameters</h2>
         <div class="grid-container">
-            mask
+            <label>Mode</label>
+            <select [disabled]="this.isRunning" [(ngModel)]="this.selectedModeOption" (change)="this.modeSelectChange($event)">
+                <option value="0">open</option>
+                <option value="1">closed</option>
+            </select>
+            <label>Mask</label>
             <select [disabled]="this.isRunning" (change)="this.maskSelectChange($event)">
                 <option value="0">elipse</option>
                 <option value="1">ampersand</option>
                 <option value="2">rectas</option>
             </select>
-            attraction distance
+            <label>Attraction distance</label>
             <input type="number" [(ngModel)]="this.attractionDistance" [disabled]="this.isRunning" (change)="this.draw($event)" />
-            prune distance
+            <label>Prune distance</label>
             <input type="number" [(ngModel)]="this.pruneDistance" [disabled]="this.isRunning" (change)="this.draw($event)"/>
-            segment length
+            <label>Segment length</label>
             <input type="number" [(ngModel)]="this.segmentLength" [disabled]="this.isRunning" />
             <input type="checkbox" [(ngModel)]="this.showAttractionZone" (change)="this.draw($event)" />
-            Show Attraction Zone        
+            <label>Show attraction zone</label>
             <input type="checkbox" [(ngModel)]="this.showPruneZone" (change)="this.draw($event)" />
-            Show Prune Zone
+            <label>Show prune zone</label>
             <input type="number" [(ngModel)]="this.numAttractors" [disabled]="this.isRunning"/>
             <button (click)="this.generateRandomAttractors($event)" [disabled]="this.isRunning">Random attractors</button>  
             <input type="number" [(ngModel)]="this.numNodes" [disabled]="this.isRunning"/>
@@ -30,9 +35,15 @@
         <button (click)="this.clickGoButton($event)" [disabled]="this.isRunning">
             Go!
         </button>
+        <input type="checkbox" [(ngModel)]="this.autoResume" (change)="this.autoResumeChange($event)" />
+        <label>Resume automatically</label>
         <br>
+        <button (click)="this.clickExportImage($event)">
+            Export image
+        </button>
     </div>
     <div class="flex-right">
-        <canvas #canvas id="canvas" (click)="this.createNewAttractor($event)" (auxclick)="this.createNewNode($event)" (contextmenu)="this.contextMenu($event)"></canvas>
+        <canvas #canvas id="canvas" (click)="this.createNewAttractor($event)" (auxclick)="this.createNewNode($event)" (contextmenu)="this.contextMenu($event)">
+        </canvas>
     </div>
 </div>

@@ -1,10 +1,11 @@
 import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { ColonizationModel } from '../colonization-model';
+import { ColonizationModel, ColonizationMode } from '../colonization-model';
 import { Node } from '../node';
 import { Attractor } from '../attractor';
-import { loadImage, sleep } from '../util';
+import { loadImage, sleep, toNumber } from '../util';
 import Vec2 from 'vec2';
 import { Mask } from '../mask';
+
 
 @Component({
   selector: 'app-main',
@@ -18,7 +19,10 @@ export class MainComponent implements AfterViewInit {
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
   }
+  private backgroundCanvas!: HTMLCanvasElement;
+
   model!: ColonizationModel;
+  selectedModeOption: ColonizationMode = ColonizationMode.Open;
 
   numAttractors: number = 250;
   numNodes: number = 1;
@@ -30,6 +34,8 @@ export class MainComponent implements AfterViewInit {
   showPruneZone: boolean = true;
   isRunning: boolean = false;
   isFresh:   boolean = true;
+
+  autoResume: boolean = true;
 
   randomAttractors: boolean = false;
 
@@ -46,6 +52,7 @@ export class MainComponent implements AfterViewInit {
   ];
   maskPath: string = this.allMaskPaths[0];
   maskImage: HTMLImageElement | undefined;
+  mask: Mask | undefined;
 
   private ctx!: CanvasRenderingContext2D | null; 
 
@@ -65,7 +72,6 @@ export class MainComponent implements AfterViewInit {
   }
 
   private drawScene(): void {
-    this.drawBackground();
     this.drawMaskImage();
     if (this.model) {
       this.drawAttractors();
@@ -73,19 +79,9 @@ export class MainComponent implements AfterViewInit {
     }
   }
 
-  private drawBackground() {
-    if (this.ctx != null) {
-      this.ctx.beginPath();
-      this.ctx.fillStyle = this.backgroundColor;
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-      this.ctx.closePath();
-    }
-  }
-
   private drawMaskImage() {
     if (this.ctx != null && this.maskImage != undefined) {
-      this.ctx.drawImage(this.maskImage, 0, 0, this.maskImage.width, this.maskImage.height,
-                                         0, 0, this.canvas.width, this.canvas.height);
+      this.ctx.drawImage(this.backgroundCanvas, 0, 0);
     }
   }
 
@@ -121,27 +117,31 @@ export class MainComponent implements AfterViewInit {
   }
   
   private drawNode(node: Node): void {
+    const cx = node.position.x;
+    const cy = node.position.y;
     if (this.ctx != null) {
-      if (!this.isRunning && this.isFresh) {
+      if (!this.isRunning) {
         this.ctx.beginPath();
-        this.ctx.ellipse(node.position.x, node.position.y, 3, 3, 0, 0, Math.PI * 2);
+        this.ctx.ellipse(cx, cy, 3, 3, 0, 0, Math.PI * 2);
         this.ctx.fillStyle = this.nodeColor;
         this.ctx.closePath();
         this.ctx.fill();
       }
       else {
         this.ctx.beginPath();
-        this.ctx.ellipse(node.position.x, node.position.y, (1 + node.thickness) / this.segmentLength, (1 + node.thickness) / this.segmentLength, 0, 0, Math.PI * 2);
+        this.ctx.ellipse(cx, cy, (1 + node.thickness) / 2, (1 + node.thickness) / 2, 0, 0, Math.PI * 2);
         this.ctx.fillStyle = this.nodeColor;
         this.ctx.closePath();
         this.ctx.fill();
       }
       if (node.parent != undefined) {
         // Draw segment between node and node.parent
-        this.ctx.moveTo(node.position.x, node.position.y);
-        this.ctx.lineTo(node.parent.position.x, node.parent.position.y);
+        const pcx = node.parent.position.x;
+        const pcy = node.parent.position.y;
+        this.ctx.moveTo(cx, cy);
+        this.ctx.lineTo(pcx, pcy);
         this.ctx.lineWidth = 1 + node.parent.thickness;
-        //ctx.lineWidth = 1;
+        //this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = this.segmentColor;
         this.ctx.closePath();
         this.ctx.stroke();
@@ -150,15 +150,13 @@ export class MainComponent implements AfterViewInit {
     }
   }
 
-  public clickResetButton(event: Event) {
+  clickResetButton(event: Event) {
     this.setup();
     this.drawScene();
   }
 
-  public async clickGoButton(event: Event) {
-    this.isRunning = true;
+  async clickGoButton(event: Event) {
     await this.run();
-    this.isRunning = false;
   }
   
   private setup(): void {
@@ -168,16 +166,17 @@ export class MainComponent implements AfterViewInit {
     this.loadMaskImage().then(result => {
       if (result) {
         this.maskImage = result;
-        if (this.ctx != null) {
-          this.ctx.drawImage(this.maskImage, 0, 0, this.maskImage.width, this.maskImage.height,
-                                             0, 0, this.canvas.width, this.canvas.height);
-          const data: ImageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-          const mask = Mask.fromImageData(data);
-          if (mask) {
-            this.model = new ColonizationModel(mask.width, mask.height, mask);
+        let tempCtx = this.backgroundCanvas.getContext('2d');
+        if (tempCtx != null) {
+          tempCtx.drawImage(this.maskImage, 0, 0, this.maskImage.width, this.maskImage.height,
+            0, 0, this.backgroundCanvas.width, this.backgroundCanvas.height);
+          const data: ImageData = tempCtx.getImageData(0, 0, this.backgroundCanvas.width, this.backgroundCanvas.height);
+          this.mask  = Mask.fromImageData(data);
+          if (this.mask) {
+            this.model = new ColonizationModel(this.mask.width, this.mask.height, this.mask, this.selectedModeOption);
           }
         }
-        this.drawScene();
+        this.drawMaskImage();
       }
     });
   }
@@ -194,63 +193,102 @@ export class MainComponent implements AfterViewInit {
       this.canvas.width = width;
       this.canvas.height = height;
     }
+    this.backgroundCanvas = document.createElement('canvas');
+    this.backgroundCanvas.width  = this.canvas.width;
+    this.backgroundCanvas.height = this.canvas.height;
   }
 
   async run(): Promise<void> {
+    this.isRunning = true;
     this.isFresh = false;
     while (true) {
       this.drawScene();
       if (!this.model.step(this.attractionDistance, this.pruneDistance, this.segmentLength)) {
         break;
       }
-      await sleep(0);
+      await sleep(1);
     }
     this.drawScene();
+    this.isRunning = false;
     console.log("DONE!");
   }
 
-  createNewAttractor(event: MouseEvent): void {
+  createNewAttractor(event: MouseEvent) {
     const rect = this.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     let a = new Attractor();
     a.position = new Vec2(x, y);
     this.model.addAtractor(a);
-    if (!this.isRunning) {
-      this.drawScene();
-    }
+    this.drawAttractor(a);
+    this.resumeColonization();
   }
 
-  createNewNode(event: MouseEvent): void {
+  createNewNode(event: MouseEvent) {
     const rect = this.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     let n = new Node();
     n.position = new Vec2(x, y);
     this.model.addNode(n);
-    if (!this.isRunning) {
-      this.drawScene();
-    }
+    this.drawNode(n);
+    this.resumeColonization();
   }
 
   contextMenu(event: Event): boolean {
     return false;
   }
 
-  generateRandomAttractors(event: Event) {
-    this.model.randomizeInteriorAttractors(this.numAttractors);
-    this.drawScene();
+  resumeColonization() {
+    if (!this.isRunning && this.autoResume) {
+      this.run();
+    }
   }
 
-  generateRandomNodes(event: Event) {
+  async generateRandomAttractors(event: Event) {
+    this.model.randomizeInteriorAttractors(this.numAttractors);
+    this.drawScene();
+    return this.resumeColonization();
+  }
+
+  async generateRandomNodes(event: Event) {
     this.model.randomizeInteriorNodes(this.numNodes);
     this.drawScene();
+    return this.resumeColonization();
   }
 
   maskSelectChange(event: Event) {
     const index = (event.target as HTMLSelectElement).selectedIndex;
     this.maskPath = this.allMaskPaths[index];
     this.setup();
+  }
+
+  modeSelectChange(event: Event) {
+    if (this.mask) {
+      this.model = new ColonizationModel(this.mask.width, this.mask.height, this.mask, this.selectedModeOption);
+      this.drawScene();
+    }
+  }
+
+  autoResumeChange(event: Event) {
+    this.resumeColonization();
+  }
+
+  clickExportImage(event: Event): void {
+    const date  = new Date();
+    const year  = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day   = date.getDate();
+    const stamp = Math.round(date.getTime() / 1000);
+    const name = `colonization-${year}${month}${day}_${stamp}`;
+    this.savePNG(this.canvas.toDataURL("image/png", 1.0), name); 
+  }
+
+  private savePNG(path: string, name: string) {
+    const link = document.createElement('a');
+    link.setAttribute("download", name + '.png');
+    link.setAttribute("href", path.replace("image/png", "image/octet-stream"));
+    link.click();
   }
 
 }

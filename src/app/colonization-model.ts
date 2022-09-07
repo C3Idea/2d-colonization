@@ -5,6 +5,11 @@ import { randomVec2 } from "./util";
 import Vec2 from "vec2";
 import { Mask } from "./mask";
 
+export enum ColonizationMode {
+    Open   = "0",
+    Closed = "1"
+}
+
 export class ColonizationModel {
     x0: number;
     x1: number;
@@ -14,8 +19,9 @@ export class ColonizationModel {
     nodes: Array<Node>;
     index: KDBush<Node>;
     mask: Mask;
+    mode: ColonizationMode;
 
-    constructor(width: number, height: number, mask: Mask | undefined = undefined) {
+    constructor(width: number, height: number, mask: Mask | undefined = undefined, mode: ColonizationMode) {
         this.x0    = 0;
         this.y0    = 0;
         this.x1    = width;
@@ -29,6 +35,7 @@ export class ColonizationModel {
         else {
             this.mask  = new Mask(width, height);
         }
+        this.mode = mode;
     }
 
     addNode(node: Node): void {
@@ -40,9 +47,20 @@ export class ColonizationModel {
     }
 
     step(attractionDistance: number, pruneDistance: number, segmentLength: number): boolean {
-        // update index
         this.updateIndex();
-        this.associateAttractorsToNodes(attractionDistance, pruneDistance);
+        if (this.mode == ColonizationMode.Open) {
+
+        }
+        switch (this.mode) {
+            case ColonizationMode.Open:
+                this.associateAttractorsToClosestNodes(attractionDistance, pruneDistance);
+                break;
+            case ColonizationMode.Closed:
+                this.associateAttractorsToNodes(attractionDistance, pruneDistance);
+                break;
+            default:
+                break;
+        }
         const n = this.nodes.length;
         this.growNewNodes(segmentLength);
         this.pruneAttractors(pruneDistance);
@@ -53,7 +71,40 @@ export class ColonizationModel {
         this.index = new KDBush(this.nodes, n => n.position.x, n => n.position.y);
     }
 
-    private associateAttractorsToNodes(attractionDistance: number, pruneDistance: number) {
+    private associateAttractorsToClosestNodes(attractionDistance: number, pruneDistance: number): void {
+        for (let a of this.attractors) {
+            let nodesInAttractionZone = this.getNodesWithinDistance(a, attractionDistance);
+            let nodesInPruneZone = this.getNodesWithinDistance(a, pruneDistance);
+            if (nodesInPruneZone.length > 0) {
+                a.reached = true;
+            }
+            let nodesToGrow = nodesInAttractionZone.filter(n => {
+                return !nodesInPruneZone.includes(n)
+            });
+            let closestNode = this.getClosestNodeToAttractor(a, nodesToGrow, attractionDistance);
+            if (closestNode) {
+                a.nodes = [closestNode];
+                closestNode.attractors.push(a);
+            }
+        }
+    }
+
+    private getClosestNodeToAttractor(attractor: Attractor, nodes: Array<Node>, maxDistance: number): Node | null {
+        let closestNode: Node | null = null;
+        if (nodes.length > 0) {
+            let minDistance = maxDistance;
+            for (let n of nodes) {
+                const tempDistance = attractor.position.distance(n.position);
+                if (tempDistance < minDistance) {
+                    minDistance = tempDistance;
+                    closestNode = n;
+                }
+            }
+        }
+        return closestNode;
+    }
+
+    private associateAttractorsToNodes(attractionDistance: number, pruneDistance: number): void {
         for (let a of this.attractors) {
             let nodesInNeighborhood = this.getRelativeNeighborNodes(a, attractionDistance);
             let nodesInPruneZone    = this.getNodesWithinDistance(a, pruneDistance);
@@ -79,7 +130,7 @@ export class ColonizationModel {
     }
 
     private segmentIsInside(p1: Vec2, p2: Vec2): boolean {
-        let n = 100;
+        let n = 16;
         let l = 1.0 / n;
         for (let i = 1; i < n; i++) {
             const lambda = i * l;
@@ -174,27 +225,22 @@ export class ColonizationModel {
 
     private pruneAttractors(pruneDistance: number) {
         for (let [iatt, att] of this.attractors.entries()) {
-            if (att.attracts()) {
-                let finished = true;
+            let finished = false;
+            if (att.reached) {
+                finished = true;
+            }
+            else if (att.attracts()) {
+                finished = true;
                 for (let node of att.nodes) {
                     if (att.position.distance(node.position) > pruneDistance) {
                         finished = false;
                         break;
                     }
                 }
-                if (finished) {
-                    this.attractors.splice(iatt, 1);
-                }
             }
-        }
-    }
-
-    private killAttractors(killDistance: number): void {
-        for (let [iatt, att] of this.attractors.entries()) {
-            const nodesInRadius = this.getNodesWithinDistance(att, killDistance);
-            if (nodesInRadius.length > 0) {
+            if (finished) {
                 this.attractors.splice(iatt, 1);
-            } 
+            }
         }
     }
 

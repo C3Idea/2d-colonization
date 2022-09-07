@@ -24,3 +24,7 @@ export async function loadImage(path: string): Promise<HTMLImageElement> {
   await imgLoadPromise;
   return img;
 }
+
+export function toNumber(x: string): number {
+  return +x;
+}
