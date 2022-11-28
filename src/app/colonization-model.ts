@@ -11,24 +11,18 @@ export enum ColonizationMode {
 }
 
 export class ColonizationModel {
-    x0: number;
-    x1: number;
-    y0: number;
-    y1: number;
     attractors: Array<Attractor>;
     nodes: Array<Node>;
-    index: KDBush<Node>;
+    attractorsIndex: KDBush<Attractor>;
+    nodesIndex: KDBush<Node>;
     mask: Mask;
     mode: ColonizationMode;
 
     constructor(width: number, height: number, mask: Mask | undefined = undefined, mode: ColonizationMode) {
-        this.x0    = 0;
-        this.y0    = 0;
-        this.x1    = width;
-        this.y1    = height;
         this.attractors = [];
         this.nodes      = [];
-        this.index      = new KDBush([]);
+        this.nodesIndex      = new KDBush([]);
+        this.attractorsIndex = new KDBush([]);
         if (mask != undefined) {
             this.mask = mask;
         }
@@ -38,11 +32,50 @@ export class ColonizationModel {
         this.mode = mode;
     }
 
-    addNode(node: Node): void {
+    update(mask: Mask) {
+        // Move all points based on new coordinates
+        let sw = mask.width / this.mask.width;
+        let sh = mask.height / this.mask.height;
+        for (let a of this.attractors) {
+            a.position.multiply(sw, sh);
+        }
+        for (let n of this.nodes) {
+            n.position.multiply(sw, sh);
+        }
+        this.mask = mask;
+    }
+
+    createNode(x: number, y: number): boolean {
+        if (this.mask.at(x, y)) {
+            if (!this.nodesIndex.within(x, y, 0).length) {
+                let n = new Node();
+                n.position = new Vec2(x, y);
+                this.addNode(n);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private addNode(node: Node): void {
         this.nodes.push(node);
     }
 
-    addAtractor(attractor: Attractor): void {
+    createAttractor(x: number, y: number): boolean {
+        if (this.mask.at(x, y)) {
+            const temp = this.attractorsIndex.within(x, y, 0);
+            console.log(temp);
+            if (!temp.length) {
+                let a = new Attractor();
+                a.position = new Vec2(x, y);
+                this.addAtractor(a);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private addAtractor(attractor: Attractor): void {
         this.attractors.push(attractor);
     }
 
@@ -68,7 +101,8 @@ export class ColonizationModel {
     }
 
     private updateIndex() {
-        this.index = new KDBush(this.nodes, n => n.position.x, n => n.position.y);
+        this.nodesIndex = new KDBush(this.nodes, n => n.position.x, n => n.position.y);
+        this.attractorsIndex = new KDBush(this.attractors, p => p.position.x, p => p.position.y);
     }
 
     private associateAttractorsToClosestNodes(attractionDistance: number, pruneDistance: number): void {
@@ -120,7 +154,7 @@ export class ColonizationModel {
 
     private getNodesWithinDistance(a: Attractor, distance: number): Array<Node> {
         let result = [];
-        let temp = this.index.within(a.position.x, a.position.y, distance).map(id => this.nodes[id]);
+        let temp = this.nodesIndex.within(a.position.x, a.position.y, distance).map(id => this.nodes[id]);
         for (let n of temp) {
             if (this.segmentIsInside(a.position, n.position)) {
                 result.push(n);
@@ -277,6 +311,4 @@ export class ColonizationModel {
             }
         }
     }
-
-
 }

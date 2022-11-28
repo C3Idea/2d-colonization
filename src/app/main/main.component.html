@@ -9,9 +9,8 @@
             </select>
             <label>Mask</label>
             <select [disabled]="this.isRunning" (change)="this.maskSelectChange($event)">
-                <option value="0">elipse</option>
-                <option value="1">ampersand</option>
-                <option value="2">rectas</option>
+                <option value="0">ampersand</option>
+                <option value="1">rectas</option>
             </select>
             <label>Attraction distance</label>
             <input type="number" [(ngModel)]="this.attractionDistance" [disabled]="this.isRunning" (change)="this.draw($event)" />

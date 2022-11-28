@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="mascaras" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #ffffff;
+        font-family: GoudyStout, 'Goudy Stout';
+        font-size: 1200px;
+      }
+
+      .cls-2 {
+        fill: #000000;
+      }
+    </style>
+  </defs>
+  <rect class="cls-2" y="0" width="1920" height="1080"/>
+  <text class="cls-1" transform="translate(163.12 994.36)"><tspan x="0" y="0">&amp;</tspan></text>
+</svg>

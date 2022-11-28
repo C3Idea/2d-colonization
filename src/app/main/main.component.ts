@@ -46,9 +46,8 @@ export class MainComponent implements AfterViewInit {
   segmentColor    = 'grey';
 
   allMaskPaths: Array<string> = [
-    "./assets/masks/elipse.png",
-    "./assets/masks/ampersand.png",
-    "./assets/masks/rectas.png"
+    "./assets/masks/mask_ampersand.svg",
+    "./assets/masks/mask_rectas.svg"
   ];
   maskPath: string = this.allMaskPaths[0];
   maskImage: HTMLImageElement | undefined;
@@ -182,7 +181,7 @@ export class MainComponent implements AfterViewInit {
   }
 
   private async loadMaskImage() {
-    return loadImage(this.maskPath);
+    return loadImage(this.maskPath, this.canvas.clientWidth, this.canvas.clientHeight);
   }
 
   private fixCanvasSize(): void {
@@ -217,10 +216,7 @@ export class MainComponent implements AfterViewInit {
     const rect = this.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    let a = new Attractor();
-    a.position = new Vec2(x, y);
-    this.model.addAtractor(a);
-    this.drawAttractor(a);
+    this.model.createAttractor(x, y);
     this.resumeColonization();
   }
 
@@ -228,10 +224,7 @@ export class MainComponent implements AfterViewInit {
     const rect = this.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    let n = new Node();
-    n.position = new Vec2(x, y);
-    this.model.addNode(n);
-    this.drawNode(n);
+    this.model.createNode(x, y);
     this.resumeColonization();
   }
 

@@ -14,15 +14,17 @@ export function sleep(miliseconds: number) {
   return new Promise(resolve => setTimeout(resolve, miliseconds));
 }
 
-export async function loadImage(path: string): Promise<HTMLImageElement> {
-  let img = new Image();
-  const imgLoadPromise = new Promise(resolve => {
-    img = new Image();
-    img.onload = resolve;
-    img.src = path;
+export async function loadImage(src: string, width: number, height: number): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image(width, height);
+    img.onload = _ => {
+      resolve(img);
+    }
+    img.onerror = e => {
+      reject(e);
+    }
+    img.src = src;
   });
-  await imgLoadPromise;
-  return img;
 }
 
 export function toNumber(x: string): number {

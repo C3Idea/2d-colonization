@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="mascaras" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: #ffffff;
+      }
+
+      .cls-2 {
+        font-family: ArialRoundedMTBold, 'Arial Rounded MT Bold';
+        font-size: 750px;
+      }
+
+      .cls-3 {
+        fill: #000000;
+      }
+    </style>
+  </defs>
+  <rect class="cls-3" width="1920" height="1080"/>
+  <g>
+    <g>
+      <circle class="cls-1" cx="658" cy="425.85" r="120"/>
+      <rect class="cls-1" x="537.46" y="426.38" width="120" height="120"/>
+      <rect class="cls-1" x="657.66" y="306.19" width="120" height="120"/>
+    </g>
+    <g>
+      <circle class="cls-1" cx="657.12" cy="706.19" r="120"/>
+      <rect class="cls-1" x="657.66" y="706.72" width="120" height="120" transform="translate(-49.07 1484.38) rotate(-90)"/>
+      <rect class="cls-1" x="537.46" y="586.53" width="120" height="120" transform="translate(-49.07 1244) rotate(-90)"/>
+    </g>
+    <g>
+      <circle class="cls-1" cx="377.12" cy="425.65" r="120"/>
+      <rect class="cls-1" x="377.66" y="426.19" width="120" height="120" transform="translate(-48.53 923.84) rotate(-90)"/>
+      <rect class="cls-1" x="257.46" y="306" width="120" height="120" transform="translate(-48.53 683.46) rotate(-90)"/>
+    </g>
+    <g>
+      <circle class="cls-1" cx="378.19" cy="706.19" r="120"/>
+      <rect class="cls-1" x="257.66" y="706.72" width="120" height="120"/>
+      <rect class="cls-1" x="377.85" y="586.53" width="120" height="120"/>
+    </g>
+  </g>
+  <g>
+    <g>
+      <rect class="cls-1" x="960" y="566.19" width="97.64" height="32.55" transform="translate(426.36 1591.28) rotate(-90)"/>
+      <rect class="cls-1" x="943.73" y="452.28" width="97.64" height="65.09" transform="translate(507.72 1477.37) rotate(-90)"/>
+      <rect class="cls-1" x="927.45" y="338.37" width="97.64" height="97.64" transform="translate(589.08 1363.46) rotate(-90)"/>
+      <rect class="cls-1" x="894.91" y="208.19" width="130.18" height="130.18" transform="translate(686.72 1233.28) rotate(-90)"/>
+      <rect class="cls-1" x="968.14" y="671.96" width="97.64" height="16.27" transform="translate(336.86 1697.05) rotate(-90)"/>
+      <rect class="cls-1" x="973.02" y="774.48" width="97.64" height="6.51" transform="translate(244.1 1799.57) rotate(-90)"/>
+      <rect class="cls-1" x="974.65" y="873.74" width="97.64" height="3.25" transform="translate(148.09 1898.83) rotate(-90)"/>
+    </g>
+    <g>
+      <rect class="cls-1" x="862.36" y="533.64" width="97.64" height="32.55" transform="translate(1461.1 -361.27) rotate(90)"/>
+      <rect class="cls-1" x="878.64" y="615.01" width="97.64" height="65.09" transform="translate(1575.01 -279.9) rotate(90)"/>
+      <rect class="cls-1" x="894.91" y="696.37" width="97.64" height="97.64" transform="translate(1688.92 -198.54) rotate(90)"/>
+      <rect class="cls-1" x="894.91" y="794.01" width="130.18" height="130.18" transform="translate(1819.1 -100.9) rotate(90)"/>
+      <rect class="cls-1" x="854.23" y="444.14" width="97.64" height="16.27" transform="translate(1355.33 -450.77) rotate(90)"/>
+      <rect class="cls-1" x="849.35" y="351.39" width="97.64" height="6.51" transform="translate(1252.81 -543.52) rotate(90)"/>
+      <rect class="cls-1" x="847.72" y="255.38" width="97.64" height="3.25" transform="translate(1153.54 -639.53) rotate(90)"/>
+    </g>
+  </g>
+  <text class="cls-2" transform="translate(1206 811.09)"><tspan x="0" y="0">A</tspan></text>
+</svg>
