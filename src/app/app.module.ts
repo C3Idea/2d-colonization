@@ -6,14 +6,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { MainComponent } from './main/main.component';
 import { SandboxComponent } from './sandbox/sandbox.component';
+import { LandingComponent } from './landing/landing.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MainComponent,
-    SandboxComponent
+    SandboxComponent,
+    LandingComponent
   ],
   imports: [
     BrowserModule,

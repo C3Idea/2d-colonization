@@ -1,11 +1,9 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ColonizationModel, ColonizationMode } from '../colonization-model';
-import { Node } from '../node';
-import { Attractor } from '../attractor';
-import { loadImage, sleep } from '../util';
-import Vec2 from 'vec2';
+import { sleep } from '../util';
 import { Mask } from '../mask';
 import { AppStrings } from '../app-strings';
+import { ColonizationViewer } from '../colonization-viewer';
 
 
 @Component({
@@ -50,25 +48,11 @@ export class SandboxComponent implements AfterViewInit {
   parametersMenuVisible: boolean = false;
   visualizationMenuVisible: boolean = false;
 
-  model!: ColonizationModel;
-
   colonizationMode: ColonizationMode = ColonizationMode.Open;
 
   numAttractors: number = 250;
   numNodes: number = 1;
-  attractionDistance: number = 128;
-  pruneDistance: number = 16; 
-  segmentLength: number = 2;
   
-  showAttractionZone: boolean = true;
-  showPruneZone: boolean = true;
-  isRunning: boolean = false;
-  isFresh:   boolean = true;
-
-  autoResume: boolean = true;
-
-  randomAttractors: boolean = false;
-
   backgroundColor = 'black';
   attractionColor = 'green';
   pruneColor      = 'red';
@@ -83,22 +67,25 @@ export class SandboxComponent implements AfterViewInit {
   maskPath: string = this.allMaskPaths[0];
   mask!: Mask;
 
-  private ctx!: CanvasRenderingContext2D | null;
   private maskCtx!: CanvasRenderingContext2D | null;
+
+  viewer: ColonizationViewer;
 
   @HostListener("window:resize", ["$event"])
   onWindowResize(event: Event) {
     this.fixCanvasDimensions();
     this.drawMaskImage();
     this.initializeMask();
-    if (this.mask) {
-      this.model.update(this.mask);
-    }
-    this.drawScene();
+    this.viewer.model.update(this.mask);
+    this.viewer.drawScene();
+  }
+
+  constructor() {
+    this.viewer = new ColonizationViewer();
   }
 
   ngAfterViewInit(): void {
-    this.ctx = this.canvas.getContext("2d");
+    this.viewer.setContext(this.canvas);
     this.maskCtx = this.maskCanvas.getContext("2d");
     this.fixCanvasDimensions();
   }
@@ -114,14 +101,10 @@ export class SandboxComponent implements AfterViewInit {
   private fixCanvasDimensions() {
     const w = this.canvas.clientWidth;
     const h = this.canvas.clientHeight;
-    if (this.canvas.width !== w || this.canvas.height !== h) {
-      this.canvas.width  = w;
-      this.canvas.height = h;
-    }
-    if (this.maskCanvas.width !== w || this.maskCanvas.height !== h) {
-      this.maskCanvas.width  = w;
-      this.maskCanvas.height = h;
-    }
+    this.canvas.width = w;
+    this.canvas.height = h;
+    this.maskCanvas.width = w;
+    this.maskCanvas.height = h;
   }
 
   private initializeMask() {
@@ -133,106 +116,26 @@ export class SandboxComponent implements AfterViewInit {
   }
 
   maskImageLoad(event: Event) {
-    this.clearCanvas();
+    this.viewer.clear();
     this.drawMaskImage();
     this.initializeMask();
-    this.model = new ColonizationModel(this.mask.width, this.mask.height, this.mask, this.colonizationMode);
-  }
-
-  private clearCanvas() {
-    if (this.ctx) {
-      this.ctx.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
-    }
+    this.viewer.model = new ColonizationModel(this.mask.width, this.mask.height, this.mask, this.colonizationMode, false);
   }
 
   parameterChange(event: Event) {
-    if (!this.isRunning) {
-      this.drawScene();
+    if (!this.viewer.isRunning) {
+      this.viewer.drawScene();
     }
   }
 
   draw(event: Event): void {
-    if (!this.isRunning) {
-      this.drawScene();
-    }
-  }
-
-
-  private drawScene(): void {
-    this.clearCanvas();
-    if (this.model) {
-      this.drawAttractors();
-      this.drawSegments();
-    }
-  }
-
-  private drawAttractors(): void {
-    for (let a of this.model.attractors) {
-      this.drawAttractor(a);
-    }
-  }
-
-  private drawAttractor(a: Attractor): void {
-    if (this.ctx != null) {
-      if (this.showAttractionZone) {
-        this.ctx.beginPath();
-        this.ctx.ellipse(a.position.x, a.position.y, this.attractionDistance, this.attractionDistance, 0, 0, Math.PI * 2);
-        this.ctx.strokeStyle = this.attractionColor;
-        this.ctx.closePath();
-        this.ctx.stroke();
-      }
-      if (this.showPruneZone) {
-        this.ctx.beginPath();
-        this.ctx.ellipse(a.position.x, a.position.y, this.pruneDistance, this.pruneDistance, 0, 0, Math.PI * 2);
-        this.ctx.strokeStyle = this.pruneColor;
-        this.ctx.closePath();
-        this.ctx.stroke();
-      }
-    }
-  }
-
-  private drawSegments(): void {
-    for (let node of this.model.nodes) {
-      this.drawNode(node);
-    }
-  }
-  
-  private drawNode(node: Node): void {
-    const cx = node.position.x;
-    const cy = node.position.y;
-    if (this.ctx != null) {
-      if (!this.isRunning) {
-        this.ctx.beginPath();
-        this.ctx.ellipse(cx, cy, 2, 2, 0, 0, Math.PI * 2);
-        this.ctx.fillStyle = this.nodeColor;
-        this.ctx.closePath();
-        this.ctx.fill();
-      }
-      else {
-        this.ctx.beginPath();
-        this.ctx.ellipse(cx, cy, (1 + node.thickness) / 2, (1 + node.thickness) / 2, 0, 0, Math.PI * 2);
-        this.ctx.fillStyle = this.nodeColor;
-        this.ctx.closePath();
-        this.ctx.fill();
-      }
-      if (node.parent != undefined) {
-        // Draw segment between node and node.parent
-        const pcx = node.parent.position.x;
-        const pcy = node.parent.position.y;
-        this.ctx.moveTo(cx, cy);
-        this.ctx.lineTo(pcx, pcy);
-        this.ctx.lineWidth = 1 + node.parent.thickness;
-        //this.ctx.lineWidth = 1;
-        this.ctx.strokeStyle = this.segmentColor;
-        this.ctx.closePath();
-        this.ctx.stroke();
-        this.ctx.lineWidth = 1;
-      }
+    if (!this.viewer.isRunning) {
+      this.viewer.drawScene();
     }
   }
 
   clickResetButton(event: Event) {
-    this.drawScene();
+    this.viewer.drawScene();
   }
 
   async clickGoButton(event: Event) {
@@ -240,25 +143,14 @@ export class SandboxComponent implements AfterViewInit {
   }
 
   async run(): Promise<void> {
-    this.isRunning = true;
-    this.isFresh = false;
-    while (true) {
-      this.drawScene();
-      if (!this.model.step(this.attractionDistance, this.pruneDistance, this.segmentLength)) {
-        break;
-      }
-      await sleep(1);
-    }
-    this.drawScene();
-    this.isRunning = false;
-    console.log("DONE!");
+    await this.viewer.run();
   }
 
   private createNewAttractor(cx: number, cy: number) {
     const rect = this.canvas.getBoundingClientRect();
     const x = cx - rect.left;
     const y = cy - rect.top;
-    if (this.model.createAttractor(x, y)) {
+    if (this.viewer.model.createAttractor(x, y)) {
       this.resumeColonization();
     }
   }
@@ -266,8 +158,7 @@ export class SandboxComponent implements AfterViewInit {
   createNewNode(cx: number, cy: number) {
     const x = cx - this.canvas.clientLeft;
     const y = cy - this.canvas.clientTop;
-    let n = new Node();
-    if (this.model.createNode(x, y)) {
+    if (this.viewer.model.createNode(x, y)) {
       this.resumeColonization();
     }
   }
@@ -277,20 +168,20 @@ export class SandboxComponent implements AfterViewInit {
   }
 
   resumeColonization() {
-    if (!this.isRunning && this.autoResume) {
+    if (!this.viewer.isRunning) {
       this.run();
     }
   }
 
   async generateRandomAttractors(event: Event) {
-    this.model.randomizeInteriorAttractors(this.numAttractors);
-    this.drawScene();
+    this.viewer.model.randomizeInteriorAttractors(this.numAttractors);
+    this.viewer.drawScene();
     return this.resumeColonization();
   }
 
   async generateRandomNodes(event: Event) {
-    this.model.randomizeInteriorNodes(this.numNodes);
-    this.drawScene();
+    this.viewer.model.randomizeInteriorNodes(this.numNodes);
+    this.viewer.drawScene();
     return this.resumeColonization();
   }
 
@@ -301,8 +192,8 @@ export class SandboxComponent implements AfterViewInit {
 
   modeSelectChange(event: Event) {
     if (this.mask) {
-      this.model = new ColonizationModel(this.mask.width, this.mask.height, this.mask, this.colonizationMode);
-      this.drawScene();
+      this.viewer.model = new ColonizationModel(this.mask.width, this.mask.height, this.mask, this.colonizationMode, false);
+      this.viewer.drawScene();
     }
   }
 

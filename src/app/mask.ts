@@ -13,7 +13,7 @@ export class Mask {
         const cx = Math.floor(x);
         const cy = Math.floor(y);
         if (cx >= 0 && cx < this.width && cy >= 0 && cy < this.height) {
-            return this.data[x][y];
+            return this.data[cx][cy];
         }
         return false;
     }

@@ -30,18 +30,18 @@
   </div>
   <form #parametersMenu id="parameters-menu">
     <li class="form-row">
-      <input type="number" [(ngModel)]="this.numAttractors" [disabled]="this.isRunning" [ngModelOptions]="{standalone: true}"/>
-      <button (click)="this.generateRandomAttractors($event)" [disabled]="this.isRunning">Random attractors</button>    
+      <input type="number" [(ngModel)]="this.numAttractors" [disabled]="this.viewer.isRunning" [ngModelOptions]="{standalone: true}"/>
+      <button (click)="this.generateRandomAttractors($event)" [disabled]="this.viewer.isRunning">Random attractors</button>    
     </li>
     <li class="form-row">
-      <input type="number" [(ngModel)]="this.numNodes" [disabled]="this.isRunning" [ngModelOptions]="{standalone: true}"/>
-      <button (click)="this.generateRandomNodes($event)" [disabled]="this.isRunning">Random nodes</button> 
+      <input type="number" [(ngModel)]="this.numNodes" [disabled]="this.viewer.isRunning" [ngModelOptions]="{standalone: true}"/>
+      <button (click)="this.generateRandomNodes($event)" [disabled]="this.viewer.isRunning">Random nodes</button> 
     </li>
     <li class="form-row">
       <label class="parameter-label">
         {{AppStrings.LabelModeText}}
       </label>
-      <select class="parameter-select" [(ngModel)]="this.colonizationMode" (change)="this.modeSelectChange($event)"
+      <select class="parameter-select" [(ngModel)]="this.viewer.model.mode" (change)="this.modeSelectChange($event)"
         [ngModelOptions]="{standalone: true}">
         <option value="0">{{AppStrings.LabelOpenModeText}}</option>
         <option value="1">{{AppStrings.LabelClosedModeText}}</option>
@@ -66,7 +66,7 @@
         {{AppStrings.LabelAttractionDistanceText}}
       </label>      
       <input class="parameter-slider" type=range
-        [(ngModel)]="this.attractionDistance"
+        [(ngModel)]="this.viewer.model.attractionRadius"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterChange($event)"
         min="8"
@@ -80,7 +80,7 @@
         {{AppStrings.LabelPruneDistanceText}}
       </label>
       <input class="parameter-slider" type=range
-        [(ngModel)]="this.pruneDistance"
+        [(ngModel)]="this.viewer.model.absorptionRadius"
         [ngModelOptions]="{standalone: true}"
         (change)="this.parameterChange($event)"
         min="4"
@@ -94,7 +94,7 @@
         {{AppStrings.LabelSegmentLengthText}}
       </label>
       <input class="parameter-slider" type=range
-        [(ngModel)]="this.segmentLength"
+        [(ngModel)]="this.viewer.model.stepLength"
         [ngModelOptions]="{standalone: true}"
         min="0.5"
         max="4"
@@ -116,13 +116,13 @@
   </button>
   <form #visualizationMenu id="visualization-menu">
     <input id="show-attraction-zone-input" type="checkbox" 
-      [(ngModel)]="this.showAttractionZone"
+      [(ngModel)]="this.viewer.showAttractionZone"
       [ngModelOptions]="{standalone: true}"
       (ngModelChange)="this.draw($event)"/>
     <label for="show-attraction-zone-input">{{AppStrings.LabelShowAttractionZoneText}}</label>
     <br>
     <input id="show-prune-zone-input" type="checkbox" 
-      [(ngModel)]="this.showPruneZone"
+      [(ngModel)]="this.viewer.showAbsorptionZone"
       [ngModelOptions]="{standalone: true}"
       (ngModelChange)="this.draw($event)" />
     <label for="show-prune-zone-input">{{AppStrings.LabelShowPruneZoneText}}</label>

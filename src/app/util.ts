@@ -10,6 +10,14 @@ export function randomVec2(x0: number, y0: number, x1: number, y1: number): Vec2
   return new Vec2(x, y);
 }
 
+export function randomVec2Array(x0: number, y0: number, x1: number, y1: number, n: number): Array<Vec2> {
+  let result: Array<Vec2> = [];
+  for (let i = 0; i < n; ++i) {
+    result.push(randomVec2(x0, y0, x1, y1));
+  }
+  return result;
+}
+
 export function sleep(miliseconds: number) {
   return new Promise(resolve => setTimeout(resolve, miliseconds));
 }
