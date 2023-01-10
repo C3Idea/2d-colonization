@@ -6,8 +6,6 @@ import { sleep } from "./util";
 export class ColonizationViewer {
   model: ColonizationModel;
   ctx:   CanvasRenderingContext2D | null;
-  width: number;
-  height: number;
   showAttractionZone: boolean;
   showAbsorptionZone: boolean;
 
@@ -18,27 +16,26 @@ export class ColonizationViewer {
   absorptionColor = 'red';
   nodeColor       = 'grey';
   segmentColor    = 'grey';
+  
+  private canvas!: HTMLCanvasElement;
 
   constructor() {
-    this.model = new ColonizationModel(0, 0, undefined, ColonizationMode.Closed);
     this.ctx   = null;
-    this.width  = 0;
-    this.height = 0;
     this.showAttractionZone = true;
     this.showAbsorptionZone = true;
     this.isRunning = false;
     this.isFresh   = true;
+    this.model = new ColonizationModel(0, 0, undefined, ColonizationMode.Closed);
   }
 
   setContext(canvas: HTMLCanvasElement) {
-    this.width = canvas.clientWidth;
-    this.height = canvas.clientHeight;
-    this.ctx = canvas.getContext("2d");
+    this.canvas = canvas;
+    this.ctx = this.canvas.getContext("2d");
   }
 
   clear() {
     if (this.ctx) {
-      this.ctx.clearRect(0, 0, this.width, this.height);
+      this.ctx.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
     }
   }
 
@@ -67,6 +64,7 @@ export class ColonizationViewer {
     }
     this.drawScene();
     this.isRunning = false;
+    console.log("Run finished!", this);
   }
 
   private drawAttractors(): void {
@@ -146,7 +144,8 @@ export class ColonizationViewer {
   }
 
   clearElements() {
-    this.isFresh = true;
+    this.isRunning = false;
+    this.isFresh   = true;
     this.model.clearElements();
   }
 

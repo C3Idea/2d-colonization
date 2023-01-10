@@ -53,7 +53,7 @@ export class LandingComponent implements AfterViewInit {
     this.rightViewer.model.disturbDirection = false;
   }
 
-  async ngAfterViewInit(): Promise<void> {
+  ngAfterViewInit() {
     this.leftViewer.setContext(this.leftCanvas);
     this.middleViewer.setContext(this.middleCanvas);
     this.rightViewer.setContext(this.rightCanvas);
@@ -62,16 +62,15 @@ export class LandingComponent implements AfterViewInit {
     this.middleViewer.model.mask = new Mask(this.middleCanvas.clientWidth, this.middleCanvas.clientHeight);
     this.rightViewer.model.mask = new Mask(this.rightCanvas.clientWidth, this.rightCanvas.clientHeight);
     this.setupSimulation();
-    await this.run();
+    this.run();
   }
 
   private setupSimulation() {
-    console.log("SETUP");
     this.leftViewer.clearElements();
     this.middleViewer.clearElements();
     this.rightViewer.clearElements();
-    this.createSeedNodes();
     this.createAttractors();
+    this.createSeedNodes();
   }
 
   @HostListener("window:resize", ["$event"])
@@ -135,16 +134,9 @@ export class LandingComponent implements AfterViewInit {
   }
 
   async run(): Promise<void> {
-    console.log(this.leftViewer.model);
-    console.log(this.middleViewer.model);
-    console.log(this.rightViewer.model);
-    let i = 0;
     await Promise.all([this.leftViewer.run(), this.middleViewer.run(), this.rightViewer.run()]);
-
-    await sleep(10000);
-
+    await sleep(1000);
     this.setupSimulation();
-
     await this.run();
   }
   
