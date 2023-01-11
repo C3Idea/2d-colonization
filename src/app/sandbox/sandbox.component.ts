@@ -1,6 +1,5 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ColonizationModel, ColonizationMode } from '../colonization-model';
-import { sleep } from '../util';
 import { Mask } from '../mask';
 import { AppStrings } from '../app-strings';
 import { ColonizationViewer } from '../colonization-viewer';
@@ -81,21 +80,17 @@ export class SandboxComponent implements AfterViewInit {
   }
 
   constructor() {
-    this.viewer = new ColonizationViewer();
+    this.viewer = new ColonizationViewer(undefined);
   }
 
   ngAfterViewInit(): void {
-    this.viewer.setContext(this.canvas);
-    this.maskCtx = this.maskCanvas.getContext("2d");
+    this.viewer.setCanvas(this.canvas);
+    this.viewer.setMaskCanvas(this.maskCanvas);
     this.fixCanvasDimensions();
   }
 
   private drawMaskImage() {
-    if (this.maskCtx) {
-      this.maskCtx.clearRect(0, 0, this.maskCanvas.clientWidth, this.maskCanvas.clientHeight);
-      this.maskCtx.drawImage(this.maskImage, 0, 0, this.maskImage.width, this.maskImage.height,
-        0, 0, this.maskCanvas.clientWidth, this.maskCanvas.clientHeight);
-    }
+    this.viewer.drawMaskImage(this.maskImage);
   }
 
   private fixCanvasDimensions() {
@@ -116,7 +111,7 @@ export class SandboxComponent implements AfterViewInit {
   }
 
   maskImageLoad(event: Event) {
-    this.viewer.clear();
+    this.viewer.clearCanvas();
     this.drawMaskImage();
     this.initializeMask();
     this.viewer.model = new ColonizationModel(this.mask.width, this.mask.height, this.mask, this.colonizationMode, false);

@@ -1,4 +1,5 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { ColonizationMode, ColonizationModel } from '../colonization-model';
 import { ColonizationViewer } from '../colonization-viewer';
 import { Mask } from '../mask';
 import { sleep } from '../util';
@@ -20,10 +21,22 @@ export class LandingComponent implements AfterViewInit {
     return this.leftCanvasRef.nativeElement;
   }
 
+  @ViewChild("leftMaskCanvas")
+  private leftMaskCanvasRef!: ElementRef;
+  private get leftMaskCanvas(): HTMLCanvasElement {
+    return this.leftMaskCanvasRef.nativeElement;
+  }
+
   @ViewChild("middleCanvas")
   private middleCanvasRef!: ElementRef;
   private get middleCanvas(): HTMLCanvasElement {
     return this.middleCanvasRef.nativeElement;
+  }
+
+  @ViewChild("middleMaskCanvas")
+  private middleMaskCanvasRef!: ElementRef;
+  private get middleMaskCanvas(): HTMLCanvasElement {
+    return this.middleMaskCanvasRef.nativeElement;
   }
 
   @ViewChild("rightCanvas")
@@ -32,6 +45,22 @@ export class LandingComponent implements AfterViewInit {
     return this.rightCanvasRef.nativeElement;
   }
 
+  @ViewChild("rightMaskCanvas")
+  private rightMaskCanvasRef!: ElementRef;
+  private get rightMaskCanvas(): HTMLCanvasElement {
+    return this.rightMaskCanvasRef.nativeElement;
+  }
+
+  @ViewChild("maskImage")
+  private maskImageRef!: ElementRef;
+  private get maskImage(): HTMLImageElement {
+    return this.maskImageRef.nativeElement;
+  }
+
+  maskPath: string = "./assets/masks/leaf.png";
+
+  private mask: Mask;
+
   private numAttractors = 250;
 
   leftViewer:   ColonizationViewer;
@@ -39,56 +68,94 @@ export class LandingComponent implements AfterViewInit {
   rightViewer:  ColonizationViewer;
 
   constructor() {
-    this.leftViewer = new ColonizationViewer();
-    //this.leftViewer.showAttractionZone = false;
-    //this.leftViewer.showAbsorptionZone = false;
+    this.mask = new Mask(0, 0);
+    this.leftViewer = new ColonizationViewer(this.mask);
     this.leftViewer.model.disturbDirection = false;
-    this.middleViewer = new ColonizationViewer();
-    //this.middleViewer.showAttractionZone = false;
-    //this.middleViewer.showAbsorptionZone = false;
+    this.middleViewer = new ColonizationViewer(this.mask);
     this.middleViewer.model.disturbDirection = false;
-    this.rightViewer = new ColonizationViewer();
-    //this.rightViewer.showAttractionZone = false;
-    //this.rightViewer.showAbsorptionZone = false;
+    this.rightViewer = new ColonizationViewer(this.mask);
     this.rightViewer.model.disturbDirection = false;
   }
 
   ngAfterViewInit() {
-    this.leftViewer.setContext(this.leftCanvas);
-    this.middleViewer.setContext(this.middleCanvas);
-    this.rightViewer.setContext(this.rightCanvas);
+    this.leftViewer.setCanvas(this.leftCanvas);
+    this.leftViewer.setMaskCanvas(this.leftMaskCanvas);
+    this.middleViewer.setCanvas(this.middleCanvas);
+    this.middleViewer.setMaskCanvas(this.middleMaskCanvas);
+    this.rightViewer.setCanvas(this.rightCanvas);
+    this.rightViewer.setMaskCanvas(this.rightMaskCanvas);
     this.fixCanvasDimensions();
-    this.leftViewer.model.mask = new Mask(this.leftCanvas.clientWidth, this.leftCanvas.clientHeight);
-    this.middleViewer.model.mask = new Mask(this.middleCanvas.clientWidth, this.middleCanvas.clientHeight);
-    this.rightViewer.model.mask = new Mask(this.rightCanvas.clientWidth, this.rightCanvas.clientHeight);
-    this.setupSimulation();
-    this.run();
   }
 
   private setupSimulation() {
     this.leftViewer.clearElements();
     this.middleViewer.clearElements();
     this.rightViewer.clearElements();
-    this.createAttractors();
     this.createSeedNodes();
+    this.createAttractors();
+    /*
+    console.log("Setup done!", this.leftViewer.model.nodes.length, this.leftViewer.model.attractors.length);
+    console.log("Setup done!", this.middleViewer.model.nodes.length, this.middleViewer.model.attractors.length);
+    console.log("Setup done!", this.rightViewer.model.nodes.length, this.rightViewer.model.attractors.length);
+    */
   }
 
   @HostListener("window:resize", ["$event"])
   onWindowResize(event: Event) {
     this.fixCanvasDimensions();
-    this.leftViewer.model.update(new Mask(this.leftCanvas.clientWidth, this.leftCanvas.clientHeight));
-    this.middleViewer.model.update(new Mask(this.middleCanvas.clientWidth, this.middleCanvas.clientHeight));
-    this.rightViewer.model.update(new Mask(this.rightCanvas.clientWidth, this.rightCanvas.clientHeight));
+    this.drawMaskImage();
+    this.initializeMask();
+    this.leftViewer.model.update(this.mask);
+    this.middleViewer.model.update(this.mask);
+    this.rightViewer.model.update(this.mask);
     this.drawScenes();
   }
 
+  private drawScenes() {
+    this.leftViewer.drawScene();
+    this.middleViewer.drawScene();
+    this.rightViewer.drawScene();
+  }
+
+  async maskImageLoad(event: Event): Promise<void> {
+    this.leftViewer.clearCanvas();
+    this.middleViewer.clearCanvas();
+    this.rightViewer.clearCanvas();
+    this.drawMaskImage();
+    this.initializeMask();
+    this.leftViewer.model = new ColonizationModel(this.mask.width, this.mask.height, this.mask, ColonizationMode.Closed, true, false);
+    this.middleViewer.model = new ColonizationModel(this.mask.width, this.mask.height, this.mask, ColonizationMode.Closed, true, false);
+    this.rightViewer.model = new ColonizationModel(this.mask.width, this.mask.height, this.mask, ColonizationMode.Closed, true, false);
+    this.setupSimulation();
+    await this.run();
+  }
+
+  private drawMaskImage() {
+    this.leftViewer.drawMaskImage(this.maskImage);
+    this.middleViewer.drawMaskImage(this.maskImage);
+    this.rightViewer.drawMaskImage(this.maskImage);
+  }
+
+  private initializeMask() {
+    const leftMaskCtx = this.leftMaskCanvas.getContext("2d");
+    if (leftMaskCtx) {
+      const data = leftMaskCtx.getImageData(0, 0, this.leftMaskCanvas.clientWidth, this.leftMaskCanvas.clientHeight);
+      this.mask = Mask.fromImageData(data);
+    }
+  }
   private fixCanvasDimensions() {
     this.leftCanvas.width  = this.leftCanvas.clientWidth;
     this.leftCanvas.height = this.leftCanvas.clientHeight;
+    this.leftMaskCanvas.width = this.leftMaskCanvas.clientWidth;
+    this.leftMaskCanvas.height = this.leftMaskCanvas.clientHeight;
     this.middleCanvas.width  = this.middleCanvas.clientWidth;
     this.middleCanvas.height = this.middleCanvas.clientHeight;
+    this.middleMaskCanvas.width  = this.middleMaskCanvas.clientWidth;
+    this.middleMaskCanvas.height = this.middleMaskCanvas.clientHeight;
     this.rightCanvas.width  = this.rightCanvas.clientWidth;
     this.rightCanvas.height = this.rightCanvas.clientHeight;
+    this.rightMaskCanvas.width  = this.rightMaskCanvas.clientWidth;
+    this.rightMaskCanvas.height = this.rightMaskCanvas.clientHeight;
   }
 
   private createSeedNodes() {
@@ -115,12 +182,6 @@ export class LandingComponent implements AfterViewInit {
     this.rightViewer.model.copyAttractors(this.leftViewer.model.attractors);
   }
 
-  private drawScenes() {
-    this.leftViewer.drawScene();
-    this.middleViewer.drawScene();
-    this.rightViewer.drawScene();
-  }
-
   leftParameterChange(event: Event) {
     this.leftViewer.drawScene();
   }
@@ -135,7 +196,7 @@ export class LandingComponent implements AfterViewInit {
 
   async run(): Promise<void> {
     await Promise.all([this.leftViewer.run(), this.middleViewer.run(), this.rightViewer.run()]);
-    await sleep(1000);
+    await sleep(5000);
     this.setupSimulation();
     await this.run();
   }

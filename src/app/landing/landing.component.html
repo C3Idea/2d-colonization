@@ -7,8 +7,11 @@
     {{LandingStrings.LabelBody}}
   </label>
   <div class="row">
-    <div id="left-colonization" class="column">
-      <canvas #leftCanvas class="colonization-canvas"></canvas>
+    <div class="column">
+      <div class="colonization-canvas-container">
+        <canvas #leftCanvas class="colonization-canvas"></canvas>
+        <canvas #leftMaskCanvas class="colonization-mask-canvas"></canvas>
+      </div>
       <input class="slider" type="range" [(ngModel)]="this.leftViewer.model.attractionRadius"
         (change)="this.leftParameterChange($event)"
         min="8"
@@ -18,8 +21,11 @@
         {{LandingStrings.AttractionRadius}}
       </label>
     </div>
-    <div id="middle-colonization" class="column">
-      <canvas #middleCanvas class="colonization-canvas"></canvas>
+    <div class="column">
+      <div class="colonization-canvas-container">
+        <canvas #middleCanvas class="colonization-canvas"></canvas>
+        <canvas #middleMaskCanvas class="colonization-mask-canvas"></canvas>
+      </div>
       <input class="slider" type="range" [(ngModel)]="this.middleViewer.model.absorptionRadius"
         (change)="this.middleParameterChange($event)"
         min="4"
@@ -29,8 +35,11 @@
         {{LandingStrings.AbsorptionRadius}}
       </label>
     </div>
-    <div id="right-colonization" class="column">
-      <canvas #rightCanvas class="colonization-canvas"></canvas>
+    <div class="column">
+      <div class="colonization-canvas-container">
+        <canvas #rightCanvas class="colonization-canvas"></canvas>
+        <canvas #rightMaskCanvas class="colonization-mask-canvas"></canvas>
+      </div>
       <input class="slider" type="range" [(ngModel)]="this.rightViewer.model.stepLength"
         (change)="this.rightParameterChange($event)"
         min="0.5"
@@ -43,4 +52,5 @@
     <div id="leaf-container" class="column">
     </div>
   </div>
+  <img #maskImage id="mask-image" [src]="this.maskPath" (load)="this.maskImageLoad($event)" />
 </div>

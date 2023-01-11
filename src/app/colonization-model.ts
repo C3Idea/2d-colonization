@@ -111,7 +111,7 @@ export class ColonizationModel {
         break;
       default:
         break;
-      }
+    }
     const n = this.nodes.length;
     this.growNewNodes(this.stepLength);
     this.absorbAttractors(this.absorptionRadius);
@@ -353,6 +353,7 @@ export class ColonizationModel {
   clearElements() {
     this.clearNodes();
     this.clearAttractors();
+    this.updateIndex();
   }
 
   clearNodes() {

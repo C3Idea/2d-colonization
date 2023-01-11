@@ -2,10 +2,12 @@ import { Attractor } from "./attractor";
 import { Node } from "./node";
 import { ColonizationMode, ColonizationModel } from "./colonization-model";
 import { sleep } from "./util";
+import { Mask } from "./mask";
 
 export class ColonizationViewer {
   model: ColonizationModel;
   ctx:   CanvasRenderingContext2D | null;
+  maskCtx: CanvasRenderingContext2D | null;
   showAttractionZone: boolean;
   showAbsorptionZone: boolean;
 
@@ -18,29 +20,49 @@ export class ColonizationViewer {
   segmentColor    = 'grey';
   
   private canvas!: HTMLCanvasElement;
+  private maskCanvas!: HTMLCanvasElement;
 
-  constructor() {
+  constructor(mask: Mask | undefined) {
     this.ctx   = null;
+    this.maskCtx = null;
     this.showAttractionZone = true;
     this.showAbsorptionZone = true;
     this.isRunning = false;
     this.isFresh   = true;
-    this.model = new ColonizationModel(0, 0, undefined, ColonizationMode.Closed);
+    if (mask) {
+      this.model = new ColonizationModel(mask.width, mask.height, mask);
+    }
+    else {
+      this.model = new ColonizationModel();
+    }
   }
 
-  setContext(canvas: HTMLCanvasElement) {
+  setCanvas(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.ctx = this.canvas.getContext("2d");
   }
 
-  clear() {
+  setMaskCanvas(maskCanvas: HTMLCanvasElement) {
+    this.maskCanvas = maskCanvas;
+    this.maskCtx = this.maskCanvas.getContext("2d");
+  }
+
+  clearCanvas() {
     if (this.ctx) {
       this.ctx.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
     }
   }
 
+  drawMaskImage(img: HTMLImageElement) {
+    if (this.maskCtx) {
+      this.maskCtx.clearRect(0, 0, this.maskCanvas.clientWidth, this.maskCanvas.clientHeight);
+      this.maskCtx.drawImage(img, 0, 0, img.width, img.height,
+        0, 0, this.maskCanvas.clientWidth, this.maskCanvas.clientHeight);
+    }
+  }
+
   drawScene() {
-    this.clear();
+    this.clearCanvas();
     this.drawAttractors();
     if (this.isFresh) {
       this.drawNodes();
@@ -64,7 +86,7 @@ export class ColonizationViewer {
     }
     this.drawScene();
     this.isRunning = false;
-    console.log("Run finished!", this);
+    //console.log("Run finished!", this.model.nodes.length, this.model.attractors.length);
   }
 
   private drawAttractors(): void {
