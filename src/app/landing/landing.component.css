@@ -16,11 +16,9 @@
 
 #label-body {
   font-size: 25px;
-  width: auto;
+  width: calc(66.6% - 40px);
   display: block;
   margin: 20px;
-  margin-right: 40px;
-  margin-left: 40px;
   text-align: justify;
 }
 
@@ -38,11 +36,11 @@
 
 .row {
   height: 76%;
-  width: 100%;
+  width: 66.6%;
 }
 
 .column {
-  width: calc(25% - 20px);
+  width: calc(33.3% - 20px);
   height: calc(100% - 20px);
   margin: 10px; 
   float: left;

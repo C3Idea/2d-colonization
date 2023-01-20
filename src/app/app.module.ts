@@ -8,12 +8,14 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { SandboxComponent } from './sandbox/sandbox.component';
 import { LandingComponent } from './landing/landing.component';
+import { LettersComponent } from './letters/letters.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SandboxComponent,
-    LandingComponent
+    LandingComponent,
+    LettersComponent
   ],
   imports: [
     BrowserModule,

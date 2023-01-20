@@ -22,19 +22,6 @@ export function sleep(miliseconds: number) {
   return new Promise(resolve => setTimeout(resolve, miliseconds));
 }
 
-export async function loadImage(src: string, width: number, height: number): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image(width, height);
-    img.onload = _ => {
-      resolve(img);
-    }
-    img.onerror = e => {
-      reject(e);
-    }
-    img.src = src;
-  });
-}
-
 export function toNumber(x: string): number {
   return +x;
 }

@@ -1,5 +1,5 @@
 <div id="main-container">
-  <canvas #canvas id="canvas" (mousedown)="this.canvasMouseDownEvent($event)" (contextmenu)="this.canvasContextMenu($event)"> 
+  <canvas #canvas id="canvas" (mousedown)="this.canvasMouseDown($event)" (contextmenu)="this.canvasContextMenu($event)"> 
   </canvas>
   <canvas #maskCanvas id="mask-canvas"></canvas>
   <img #maskImage id="mask-image" [src]="this.maskPath" (load)="this.maskImageLoad($event)" />
@@ -15,7 +15,7 @@
         </g>
       </svg>
     </button>
-    <button type="button" class="toolbar-button">
+    <button id="button-export-image" type="button" class="toolbar-button" (click)="this.clickExportImage($event)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
         <g>
           <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
@@ -28,30 +28,33 @@
       </svg>
     </button>
   </div>
+  <div id="toggle-switch">
+    <label class="switch-label">Atractor</label>
+    <label id="shell-switch" class="switch">
+      <input type="checkbox" [(ngModel)]="this.toggleSwitchChecked"/>
+      <span class="switch-slider round"></span>
+    </label>
+    <label class="switch-label">Nodo</label>
+  </div>
+  <button class="toolbar-button" id="reset-button" (click)="this.clickResetButton($event)">
+    Reset
+  </button>
   <form #parametersMenu id="parameters-menu">
     <li class="form-row">
-      <input type="number" [(ngModel)]="this.numAttractors" [disabled]="this.viewer.isRunning" [ngModelOptions]="{standalone: true}"/>
-      <button (click)="this.generateRandomAttractors($event)" [disabled]="this.viewer.isRunning">Random attractors</button>    
-    </li>
-    <li class="form-row">
-      <input type="number" [(ngModel)]="this.numNodes" [disabled]="this.viewer.isRunning" [ngModelOptions]="{standalone: true}"/>
-      <button (click)="this.generateRandomNodes($event)" [disabled]="this.viewer.isRunning">Random nodes</button> 
-    </li>
-    <li class="form-row">
       <label class="parameter-label">
-        {{AppStrings.LabelModeText}}
+        {{SandboxStrings.Colonization}}
       </label>
       <select class="parameter-select" [(ngModel)]="this.viewer.model.mode" (change)="this.modeSelectChange($event)"
         [ngModelOptions]="{standalone: true}">
-        <option value="0">{{AppStrings.LabelOpenModeText}}</option>
-        <option value="1">{{AppStrings.LabelClosedModeText}}</option>
+        <option value="0">{{SandboxStrings.OpenColonization}}</option>
+        <option value="1">{{SandboxStrings.ClosedColonization}}</option>
       </select>
       <input type="image" class="parameter-help-button"
         src="./assets/icons/icon_info_i.svg" />
     </li>
     <li class="form-row">
       <label class="parameter-label">
-        {{AppStrings.LabelMaskText}}
+        {{SandboxStrings.Mask}}
       </label>
       <select class="parameter-select" (change)="this.maskSelectChange($event)">
         <option value="0">elipse</option>
@@ -63,7 +66,7 @@
     </li>
     <li class="form-row">
       <label class="parameter-label">
-        {{AppStrings.LabelAttractionDistanceText}}
+        {{SandboxStrings.AttractionRadius}}
       </label>      
       <input class="parameter-slider" type=range
         [(ngModel)]="this.viewer.model.attractionRadius"
@@ -77,7 +80,7 @@
     </li>
     <li class="form-row">
       <label class="parameter-label">
-        {{AppStrings.LabelPruneDistanceText}}
+        {{SandboxStrings.AbsorptionRadius}}
       </label>
       <input class="parameter-slider" type=range
         [(ngModel)]="this.viewer.model.absorptionRadius"
@@ -91,7 +94,7 @@
     </li>
     <li class="form-row">
       <label class="parameter-label">
-        {{AppStrings.LabelSegmentLengthText}}
+        {{SandboxStrings.StepLength}}
       </label>
       <input class="parameter-slider" type=range
         [(ngModel)]="this.viewer.model.stepLength"
@@ -119,12 +122,12 @@
       [(ngModel)]="this.viewer.showAttractionZone"
       [ngModelOptions]="{standalone: true}"
       (ngModelChange)="this.draw($event)"/>
-    <label for="show-attraction-zone-input">{{AppStrings.LabelShowAttractionZoneText}}</label>
+    <label for="show-attraction-zone-input">{{SandboxStrings.ShowAttractionRadius}}</label>
     <br>
     <input id="show-prune-zone-input" type="checkbox" 
       [(ngModel)]="this.viewer.showAbsorptionZone"
       [ngModelOptions]="{standalone: true}"
       (ngModelChange)="this.draw($event)" />
-    <label for="show-prune-zone-input">{{AppStrings.LabelShowPruneZoneText}}</label>
+    <label for="show-prune-zone-input">{{SandboxStrings.ShowAbsorptionRadius}}</label>
   </form>
 </div>

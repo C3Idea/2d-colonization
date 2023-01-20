@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ColonizationModel, ColonizationMode } from '../colonization-model';
 import { Mask } from '../mask';
-import { AppStrings } from '../app-strings';
+import { SandboxStrings } from './sandbox.strings';
 import { ColonizationViewer } from '../colonization-viewer';
 
 
@@ -12,7 +12,7 @@ import { ColonizationViewer } from '../colonization-viewer';
 })
 
 export class SandboxComponent implements AfterViewInit {
-  AppStrings = AppStrings;
+  SandboxStrings = SandboxStrings;
   
   @ViewChild("canvas")
   private canvasRef!: ElementRef;
@@ -58,6 +58,8 @@ export class SandboxComponent implements AfterViewInit {
   nodeColor       = 'grey';
   segmentColor    = 'grey';
 
+  toggleSwitchChecked: boolean = false;
+
   allMaskPaths: Array<string> = [
     "./assets/masks/elipse.png",
     "./assets/masks/ampersand.png",
@@ -65,8 +67,6 @@ export class SandboxComponent implements AfterViewInit {
   ];
   maskPath: string = this.allMaskPaths[0];
   mask!: Mask;
-
-  private maskCtx!: CanvasRenderingContext2D | null;
 
   viewer: ColonizationViewer;
 
@@ -94,18 +94,16 @@ export class SandboxComponent implements AfterViewInit {
   }
 
   private fixCanvasDimensions() {
-    const w = this.canvas.clientWidth;
-    const h = this.canvas.clientHeight;
-    this.canvas.width = w;
-    this.canvas.height = h;
-    this.maskCanvas.width = w;
-    this.maskCanvas.height = h;
+    this.canvas.width  = this.canvas.clientWidth;
+    this.canvas.height = this.canvas.clientHeight;
+    this.maskCanvas.width  = this.maskCanvas.clientWidth;
+    this.maskCanvas.height = this.maskCanvas.clientHeight;
   }
 
   private initializeMask() {
-    if (this.maskCtx) {
-      this.maskCtx.drawImage(this.maskImage, 0, 0, this.maskImage.width, this.maskImage.height, 0, 0, this.maskCanvas.clientWidth, this.maskCanvas.clientHeight);
-      const data = this.maskCtx.getImageData(0, 0, this.maskCanvas.clientWidth, this.maskCanvas.clientHeight);
+    const maskCtx = this.maskCanvas.getContext("2d");
+    if (maskCtx) {
+      const data = maskCtx.getImageData(0, 0, this.maskCanvas.clientWidth, this.maskCanvas.clientHeight);
       this.mask  = Mask.fromImageData(data);
     }
   }
@@ -130,6 +128,7 @@ export class SandboxComponent implements AfterViewInit {
   }
 
   clickResetButton(event: Event) {
+    this.viewer.clearElements();
     this.viewer.drawScene();
   }
 
@@ -203,7 +202,15 @@ export class SandboxComponent implements AfterViewInit {
     const day   = date.getDate();
     const stamp = Math.round(date.getTime() / 1000);
     const name = `colonization-${year}${month}${day}_${stamp}`;
-    this.savePNG(this.canvas.toDataURL("image/png", 1.0), name); 
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width  = this.canvas.clientWidth;
+    tempCanvas.height = this.canvas.clientHeight;
+    const tempCtx = tempCanvas.getContext("2d");
+    if (tempCtx) {
+      tempCtx.drawImage(this.maskCanvas, 0, 0);
+      tempCtx.drawImage(this.canvas, 0, 0);
+    }
+    this.savePNG(tempCanvas.toDataURL("image/png", 1.0), name); 
   }
 
   private savePNG(path: string, name: string) {
@@ -235,18 +242,18 @@ export class SandboxComponent implements AfterViewInit {
     this.parametersMenu.style.display = 'none';
   }
 
-  canvasMouseDownEvent(event: MouseEvent): void {
+  canvasMouseDown(event: MouseEvent): void {
     if (this.parametersMenuVisible) {
       this.hideParametersMenu();
     }
     if (this.visualizationMenuVisible) {
       this.hideVisualizationMenu();
     }
-    if (event.button == 0) { // Main button
-      this.createNewAttractor(event.clientX, event.clientY);
-    }
-    else if (event.button == 2) { // Aux button
+    if (this.toggleSwitchChecked) {
       this.createNewNode(event.clientX, event.clientY);
+    }
+    else {
+      this.createNewAttractor(event.clientX, event.clientY);
     }
   }
 
