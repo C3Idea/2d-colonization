@@ -123,16 +123,16 @@ export class LettersComponent implements AfterViewInit {
 
   buttonCreateMaskClick(event: Event) {
     this.clearMaskCanvas();
+    const tempInputText = this.inputText.toUpperCase();
     let n = this.inputText.length;
     const w = this.maskCanvas.clientWidth;
     const h = this.maskCanvas.clientHeight;
     for (let i = 0; i < n; i++) {
-      const c = this.inputText.charAt(i);
-      const cpath = this.lettersPath + "/" + "A.png";
+      const c = tempInputText.charAt(i);
+      const cpath = this.lettersPath + "/" + "char_" + c + "_mask.png";
       const img = new Image();
       const ctx = this.maskCanvas.getContext("2d");
       img.onload = function() {
-        console.log(this, this);
         if (ctx) {
           const cw = i * w / n;
           ctx.drawImage(img, 0, 0, img.width, img.height, cw, 0, w / n, h);
