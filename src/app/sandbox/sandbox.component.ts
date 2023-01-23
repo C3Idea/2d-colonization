@@ -3,6 +3,7 @@ import { ColonizationModel, ColonizationMode } from '../colonization-model';
 import { Mask } from '../mask';
 import { SandboxStrings } from './sandbox.strings';
 import { ColonizationViewer } from '../colonization-viewer';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -79,7 +80,7 @@ export class SandboxComponent implements AfterViewInit {
     this.viewer.drawScene();
   }
 
-  constructor() {
+  constructor(private router: Router) {
     this.viewer = new ColonizationViewer(undefined);
   }
 
@@ -276,5 +277,21 @@ export class SandboxComponent implements AfterViewInit {
   private hideVisualizationMenu() {
     this.visualizationMenu.style.display = 'none';
     this.visualizationMenuVisible = false;
+  }
+
+  buttonPreviousClick(event: Event) {
+    this.navigateToLanding();
+  }
+
+  private navigateToLanding() {
+    this.router.navigate(["landing"]);
+  }
+
+  buttonNextClick(event: Event) {
+    this.navigateToLetters();
+  }
+
+  private navigateToLetters() {
+    this.router.navigate(["letters"]);
   }
 }

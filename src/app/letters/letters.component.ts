@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { ColonizationViewer } from '../colonization-viewer';
 import { Mask } from '../mask';
 
@@ -36,7 +37,7 @@ export class LettersComponent implements AfterViewInit {
 
   mask: Mask;
 
-  constructor() {
+  constructor(private router: Router) {
     this.inputText = "";
     this.mask = new Mask(0, 0);
     this.viewer = new ColonizationViewer(this.mask);
@@ -139,5 +140,13 @@ export class LettersComponent implements AfterViewInit {
       }
       img.src = cpath;
     }
+  }
+
+  buttonPreviousClick(event: Event) {
+    this.navigateToSandbox();
+  }
+
+  private navigateToSandbox() {
+    this.router.navigate(["sandbox"]);
   }
 }

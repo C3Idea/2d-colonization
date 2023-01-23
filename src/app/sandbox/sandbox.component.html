@@ -130,4 +130,8 @@
       (ngModelChange)="this.draw($event)" />
     <label for="show-prune-zone-input">{{SandboxStrings.ShowAbsorptionRadius}}</label>
   </form>
+  <div id="navigation-bar">
+    <button class="navigation-button" id="button-previous" (click)="this.buttonPreviousClick($event)">Anterior</button>
+    <button class="navigation-button" id="button-next" (click)="this.buttonNextClick($event)">Siguiente</button>
+  </div>
 </div>

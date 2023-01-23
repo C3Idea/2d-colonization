@@ -14,8 +14,8 @@
       </div>
       <input class="slider" type="range" [(ngModel)]="this.leftViewer.model.attractionRadius"
         (change)="this.leftParameterChange($event)"
-        min="8"
-        max="128"
+        min="16"
+        max="256"
         step="1" />
       <label class="label-parameter">
         {{LandingStrings.AttractionRadius}}
@@ -51,4 +51,8 @@
     </div>
   </div>
   <img #maskImage id="mask-image" [src]="this.maskPath" (load)="this.maskImageLoad($event)" />
+  <div id="navigation-bar">
+    <button class="navigation-button" id="button-previous" [disabled]="true">Anterior</button>
+    <button class="navigation-button" id="button-next" (click)="this.buttonNextClick($event)">Siguiente</button>
+  </div>
 </div>

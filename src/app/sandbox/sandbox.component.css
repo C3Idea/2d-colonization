@@ -244,3 +244,16 @@ input:checked + .switch-slider:before {
   border-radius: 50%;
 }
 
+#navigation-bar {
+  position: absolute;
+  bottom: 50px;
+  right: 200px;
+  z-index: 1;
+}
+
+.navigation-button {
+  width: 100px;
+  height: 50px;
+  margin: 10px;
+  z-index: 1;
+}

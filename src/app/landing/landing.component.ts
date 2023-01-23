@@ -1,4 +1,5 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Router } from '@angular/router';
 import { ColonizationMode, ColonizationModel } from '../colonization-model';
 import { ColonizationViewer } from '../colonization-viewer';
 import { Mask } from '../mask';
@@ -67,7 +68,7 @@ export class LandingComponent implements AfterViewInit {
   middleViewer: ColonizationViewer;
   rightViewer:  ColonizationViewer;
 
-  constructor() {
+  constructor(private router: Router) {
     this.mask = new Mask(0, 0);
     this.leftViewer = new ColonizationViewer(this.mask);
     this.leftViewer.model.disturbDirection = false;
@@ -93,11 +94,6 @@ export class LandingComponent implements AfterViewInit {
     this.rightViewer.clearElements();
     this.createSeedNodes();
     this.createAttractors();
-    /*
-    console.log("Setup done!", this.leftViewer.model.nodes.length, this.leftViewer.model.attractors.length);
-    console.log("Setup done!", this.middleViewer.model.nodes.length, this.middleViewer.model.attractors.length);
-    console.log("Setup done!", this.rightViewer.model.nodes.length, this.rightViewer.model.attractors.length);
-    */
   }
 
   @HostListener("window:resize", ["$event"])
@@ -200,5 +196,13 @@ export class LandingComponent implements AfterViewInit {
     this.setupSimulation();
     await this.run();
   }
+
+  buttonNextClick(event: Event) {
+    this.navigateToSandbox();
+  }
   
+  private navigateToSandbox() {
+    this.router.navigate(["sandbox"]);
+  }
+
 }
