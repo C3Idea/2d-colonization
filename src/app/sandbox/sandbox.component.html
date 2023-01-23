@@ -118,6 +118,34 @@
     </svg>
   </button>
   <form #visualizationMenu id="visualization-menu">
+    <div class="color-selector">
+      <label class="color-selector-label">Nodo</label>
+      <input class="color-selector-input" id="nodeColorInput" type="color"
+        [(ngModel)]="this.viewer.nodeColor"
+        [ngModelOptions]="{standalone: true}"
+        (ngModelChange)="this.draw($event)"
+      />
+      <label class="color-selector-label">Segmento</label>
+      <input class="color-selector-input" id="branchColorInput" type="color"
+        [(ngModel)]="this.viewer.segmentColor"
+        [ngModelOptions]="{standalone: true}"
+        (ngModelChange)="this.draw($event)"
+      />
+    </div>
+    <div class="color-selector">
+      <label class="color-selector-label">Radio atracción</label>
+      <input class="color-selector-input" id="branchColorInput" type="color"
+        [(ngModel)]="this.viewer.attractionColor"
+        [ngModelOptions]="{standalone: true}"
+        (ngModelChange)="this.draw($event)"
+      />
+      <label class="color-selector-label">Radio absorción</label>
+      <input class="color-selector-input" id="branchColorInput" type="color"
+        [(ngModel)]="this.viewer.absorptionColor"
+        [ngModelOptions]="{standalone: true}"
+        (ngModelChange)="this.draw($event)"
+      />
+    </div>
     <input id="show-attraction-zone-input" type="checkbox" 
       [(ngModel)]="this.viewer.showAttractionZone"
       [ngModelOptions]="{standalone: true}"

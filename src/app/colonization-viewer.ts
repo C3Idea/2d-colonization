@@ -14,10 +14,10 @@ export class ColonizationViewer {
   isRunning: boolean;
   isFresh: boolean;
 
-  attractionColor = 'green';
-  absorptionColor = 'red';
-  nodeColor       = 'grey';
-  segmentColor    = 'grey';
+  attractionColor = "#00FF00";
+  absorptionColor = "#FF0000";
+  nodeColor       = "#A0A0A0";
+  segmentColor    = '#A0A0A0';
   
   private canvas!: HTMLCanvasElement;
   private maskCanvas!: HTMLCanvasElement;
@@ -145,12 +145,12 @@ export class ColonizationViewer {
     const cx = node.position.x;
     const cy = node.position.y;
     if (this.ctx != null) {
-      this.ctx.beginPath();
-      this.ctx.ellipse(cx, cy, (1 + node.thickness) / 2, (1 + node.thickness) / 2, 0, 0, Math.PI * 2);
-      this.ctx.fillStyle = this.nodeColor;
-      this.ctx.closePath();
-      this.ctx.fill();
       if (node.parent != undefined) {
+        this.ctx.beginPath();
+        this.ctx.ellipse(cx, cy, (1 + node.thickness) / 2, (1 + node.thickness) / 2, 0, 0, Math.PI * 2);
+        this.ctx.fillStyle = this.nodeColor;
+        this.ctx.closePath();
+        this.ctx.fill();
         // Draw segment between node and node.parent
         const pcx = node.parent.position.x;
         const pcy = node.parent.position.y;
@@ -161,6 +161,13 @@ export class ColonizationViewer {
         this.ctx.closePath();
         this.ctx.stroke();
         this.ctx.lineWidth = 1;
+      }
+      else {
+        this.ctx.beginPath();
+        this.ctx.ellipse(cx, cy, 3, 3, 0, 0, Math.PI * 2);
+        this.ctx.fillStyle = this.nodeColor;
+        this.ctx.closePath();
+        this.ctx.fill();
       }
     }
   }
