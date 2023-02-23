@@ -8,4 +8,6 @@ export class SandboxStrings {
   static ClosedColonization = "Cerrada";
   static ShowAttractionRadius = "Mostrar radio de atracción";
   static ShowAbsorptionRadius = "Mostrar radio de absorción";
+  static RandomAttractors = "Atractores aleatorios";
+  static RandomNodes = "Nodos aleatorios";
 }

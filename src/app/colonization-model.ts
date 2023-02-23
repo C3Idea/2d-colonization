@@ -318,7 +318,6 @@ export class ColonizationModel {
 
   randomizeInteriorAttractors(n: number) {
     if (this.mask) {
-      this.attractors = new Array<Attractor>(n);
       for (let i = 0; i < n; i++) {
         let pos = new Vec2(0, 0);
         let valid = false;
@@ -328,25 +327,48 @@ export class ColonizationModel {
         }
         let a = new Attractor();
         a.position = pos;
-        this.attractors[i] = a;
+        this.attractors.push(a);
       }
     }
   }
 
+  private getRandomInteriorNode(x0: number, y0: number, x1: number, y1: number) {
+    let pos = new Vec2(0, 0);
+    if (this.mask) {
+      let valid = false;
+      while (!valid) {
+        pos = randomVec2(x0, y0, x1, y1);
+        valid = this.pointIsInside(pos);
+      }
+    }
+    else {
+      pos = randomVec2(x0, y0, x1, y1);
+    }
+    let node = new Node();
+    node.position = pos;
+    return node;
+  }
+
   randomizeInteriorNodes(n: number) {
     if (this.mask) {
-      this.nodes = new Array<Node>(n);
       for (let i = 0; i < n; i++) {
-        let pos = new Vec2(0, 0);
-        let valid = false;
-        while (!valid) {
-          pos = randomVec2(0, 0, this.mask.width, this.mask.height);
-          valid = this.pointIsInside(pos);
-        }
-        let node = new Node();
-        node.position = pos;
-        this.nodes[i] = node;
+        let node = this.getRandomInteriorNode(0, 0, this.mask.width, this.mask.height);
+        this.nodes.push(node);
       }
+    }
+  }
+
+  randomizeInteriorNodesWithinCoordinatesInDivisions(n: number, ndivs: number, x0: number, y0: number, x1: number, y1: number) {
+    if (this.mask) {
+      const deltax = (x1 - x0) / ndivs;
+      for (let idiv = 0; idiv < ndivs; idiv++) {
+        const dx0 = idiv * deltax;
+        const dx1 = (idiv + 1) * deltax;
+        for (let i = 0; i < n; i++) {
+          let node = this.getRandomInteriorNode(dx0, 0, dx1, this.mask.height);
+          this.nodes.push(node);
+        }
+      }   
     }
   }
 

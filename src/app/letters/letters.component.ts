@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { ColonizationMode, ColonizationModel } from '../colonization-model';
 import { ColonizationViewer } from '../colonization-viewer';
 import { Mask } from '../mask';
 
@@ -32,6 +33,8 @@ export class LettersComponent implements AfterViewInit {
 
   lettersPath: string = "./assets/letters";
 
+  letters: Array<HTMLImageElement> = [];
+
   inputText: string;
   parametersMenuVisible: boolean = false;
 
@@ -41,6 +44,15 @@ export class LettersComponent implements AfterViewInit {
     this.inputText = "";
     this.mask = new Mask(0, 0);
     this.viewer = new ColonizationViewer(this.mask);
+  }
+
+  @HostListener("window:resize", ["$event"])
+  onWindowResize(event: Event) {
+    this.fixCanvasDimensions();
+    this.createMask();
+    this.initializeMask();
+    this.viewer.model.update(this.mask);
+    this.viewer.drawScene();
   }
 
   ngAfterViewInit(): void {
@@ -121,24 +133,55 @@ export class LettersComponent implements AfterViewInit {
     }
   }
 
-  buttonCreateMaskClick(event: Event) {
-    this.clearMaskCanvas();
+  async buttonCreateMaskClick(event: Event) {
+    await this.downloadLetterImages();
+    this.createMask();
+    this.initializeMask();
+    this.viewer.model = new ColonizationModel(this.mask.width, this.mask.height, this.mask, ColonizationMode.Closed, false);
+    this.viewer.showAbsorptionZone = false;
+    this.viewer.showAttractionZone = false;
+    this.viewer.model.randomizeInteriorAttractors(1000);
+    this.viewer.model.randomizeInteriorNodesWithinCoordinatesInDivisions(1, this.letters.length, 0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
+    this.viewer.run();
+  }
+
+  private async downloadLetterImages() {
     const tempInputText = this.inputText.toUpperCase();
+    console.log(tempInputText);
     let n = this.inputText.length;
-    const w = this.maskCanvas.clientWidth;
-    const h = this.maskCanvas.clientHeight;
+    this.letters = [];
     for (let i = 0; i < n; i++) {
       const c = tempInputText.charAt(i);
       const cpath = this.lettersPath + "/" + "char_" + c + "_mask.png";
       const img = new Image();
-      const ctx = this.maskCanvas.getContext("2d");
-      img.onload = function() {
-        if (ctx) {
-          const cw = i * w / n;
-          ctx.drawImage(img, 0, 0, img.width, img.height, cw, 0, w / n, h);
-        }
+      this.letters.push(img);
+      await new Promise(r => {
+        img.onload = r;
+        img.src    = cpath;
+      });
+    }
+  }
+
+  private createMask() {
+    this.clearMaskCanvas();
+    const ctx = this.maskCanvas.getContext("2d");
+    const w = this.maskCanvas.clientWidth;
+    const h = this.maskCanvas.clientHeight;
+    const n = this.letters.length;
+    if (ctx) {
+      for (let i = 0; i < n; i++) {
+        const img = this.letters[i];
+        const cw = i * w / n;
+        ctx.drawImage(img, 0, 0, img.width, img.height, cw, 0, w / n, h);
       }
-      img.src = cpath;
+    }
+  }
+
+  private initializeMask() {
+    const maskCtx = this.maskCanvas.getContext("2d");
+    if (maskCtx) {
+      const data = maskCtx.getImageData(0, 0, this.maskCanvas.clientWidth, this.maskCanvas.clientHeight);
+      this.mask  = Mask.fromImageData(data);
     }
   }
 

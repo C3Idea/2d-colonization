@@ -105,6 +105,18 @@
       <input type="image" class="parameter-help-button"
         src="./assets/icons/icon_info_i.svg" />
     </li>
+    <li class="form-row">
+      <input type="number" [(ngModel)]="this.numAttractors" [ngModelOptions]="{standalone: true}"/>
+      <button (click)="this.generateRandomAttractors($event)">{{SandboxStrings.RandomAttractors}}</button>  
+      <input type="image" class="parameter-help-button"
+        src="./assets/icons/icon_info_i.svg" /> 
+    </li>
+    <li class="form-row">
+      <input type="number" [(ngModel)]="this.numNodes" [ngModelOptions]="{standalone: true}" >
+      <button (click)="this.generateRandomNodes($event)">{{SandboxStrings.RandomNodes}}</button>  
+      <input type="image" class="parameter-help-button"
+        src="./assets/icons/icon_info_i.svg" />
+    </li>
   </form>
   <button type="button" class="toolbar-button" id="visualization-button" (click)="this.visualizationMenuButtonClick($event)">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
