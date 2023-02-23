@@ -53,6 +53,8 @@ export class LettersComponent implements AfterViewInit {
 
   mask: Mask;
 
+  private numAttractors = 1000;
+
   constructor(private router: Router) {
     this.inputText = "";
     this.mask = new Mask(0, 0);
@@ -158,11 +160,11 @@ export class LettersComponent implements AfterViewInit {
       await this.downloadLetterImages();
       this.createMask();
       this.initializeMask();
-      this.viewer.model = new ColonizationModel(this.mask.width, this.mask.height, this.mask, ColonizationMode.Closed, false);
+      this.viewer.model = new ColonizationModel(this.mask.width, this.mask.height, this.mask, ColonizationMode.Open, false);
       this.viewer.showAbsorptionZone = false;
       this.viewer.showAttractionZone = false;
       this.viewer.showAttractors = false;
-      this.viewer.model.randomizeInteriorAttractors(1000);
+      this.viewer.model.randomizeInteriorAttractors(this.numAttractors);
       this.viewer.model.randomizeInteriorNodesWithinCoordinatesInDivisions(1, this.letters.length, 0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
       this.viewer.run();
     }
