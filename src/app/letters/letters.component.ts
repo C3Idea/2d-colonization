@@ -54,6 +54,9 @@ export class LettersComponent implements AfterViewInit {
   mask: Mask;
 
   private numAttractors = 1000;
+  private attractionRadius = 128;
+  private absorptionRadius = 16;
+  private stepLength = 2;
 
   constructor(private router: Router) {
     this.inputText = "";
@@ -161,6 +164,9 @@ export class LettersComponent implements AfterViewInit {
       this.createMask();
       this.initializeMask();
       this.viewer.model = new ColonizationModel(this.mask.width, this.mask.height, this.mask, ColonizationMode.Open, false);
+      this.viewer.model.attractionRadius = this.attractionRadius;
+      this.viewer.model.absorptionRadius = this.absorptionRadius;
+      this.viewer.model.stepLength = this.stepLength;
       this.viewer.showAbsorptionZone = false;
       this.viewer.showAttractionZone = false;
       this.viewer.showAttractors = false;
