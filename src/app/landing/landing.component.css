@@ -4,6 +4,7 @@
   margin: 0;
   padding: 0;
   overflow: auto;
+  background-color: beige;
 }
 
 #label-title {
@@ -103,4 +104,21 @@
   height: 50px;
   margin: 10px;
   z-index: 1;
+}
+
+.toolbar-button {
+  width:  64px;
+  height: 64px;
+  margin: 2px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 1;
+}
+
+#button-reset {
+  position: absolute;
+  bottom: 50px;
+  right: 50px;
+  background-color: white;
 }

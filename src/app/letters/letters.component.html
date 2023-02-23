@@ -2,7 +2,7 @@
   <canvas #canvas id="canvas" (mousedown)="this.canvasMouseDown($event)" (contextmenu)="this.canvasContextMenu($event)"> 
   </canvas>
   <canvas #maskCanvas id="mask-canvas"></canvas>
-  <div id="toolbar">
+  <div id="toolbar-top">
     <button id="button-parameters-menu" type="button" class="toolbar-button" (click)="this.buttonParametersMenuClick($event)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
         <g>
@@ -26,18 +26,77 @@
         </g>
       </svg>
     </button>
+    <button type="button" class="toolbar-button" (click)="this.buttonIntroClick($event)">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
+        <g>
+          <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
+          <g>
+            <path class="svg-content" d="M33.6,50.22c-.11,0-.22-.02-.33-.05-.21-.07-.39-.21-.51-.38l-1.16-1.55c-.47-.62-1.21-1-2-1H12.53c-.57,0-1.03-.46-1.03-1.03V17.81c0-.57,.46-1.03,1.03-1.03H29.84c1.37,0,2.64,.67,3.41,1.8l.35,.52,.35-.52c.77-1.13,2.04-1.8,3.41-1.8h17.1c.57,0,1.03,.46,1.03,1.03v28.39c0,.57-.46,1.03-1.03,1.03h-16.86c-.78,0-1.53,.37-1.99,1l-1.18,1.57c-.2,.26-.51,.41-.83,.41h0Zm1.03-28.96v25.02c.82-.7,1.87-1.1,2.97-1.1h15.83V18.85h-16.07c-.68,0-1.32,.34-1.7,.9l-1.03,1.51ZM13.56,45.17H29.6c1.09,0,2.15,.4,2.97,1.1V21.26l-1.03-1.51c-.38-.56-1.02-.9-1.7-.9H13.56v26.32Z"/>
+            <path class="svg-content" d="M27.33,27.87h2.52v2.06h-2.52v-2.06Z"/>
+            <path class="svg-content" d="M16.55,27.87h8.73v2.06h-8.73v-2.06Z"/>
+            <path class="svg-content" d="M22,33.64h7.86v2.06h-7.86v-2.06Z"/>
+            <path class="svg-content" d="M16.55,33.64h3.45v2.06h-3.45v-2.06Z"/>
+            <path class="svg-content" d="M26.25,39.41h3.6v2.06h-3.6v-2.06Z"/>
+            <path class="svg-content" d="M16.55,39.41h7.78v2.06h-7.78v-2.06Z"/>
+            <path class="svg-content" d="M45.84,27.87h4.82v2.06h-4.82v-2.06Z"/>
+            <path class="svg-content" d="M37.35,27.87h6.51v2.06h-6.51v-2.06Z"/>
+            <path class="svg-content" d="M16.55,22.1h13.31v2.06h-13.31v-2.06Z"/>
+            <path class="svg-content" d="M37.35,22.1h13.31v2.06h-13.31v-2.06Z"/>
+            <path class="svg-content" d="M41.79,33.64h8.86v2.06h-8.86v-2.06Z"/>
+            <path class="svg-content" d="M37.35,33.64h2.42v2.06h-2.42v-2.06Z"/>
+            <path class="svg-content" d="M37.35,39.41h7.69v2.06h-7.69v-2.06Z"/>
+          </g>
+        </g>
+      </svg>
+    </button>
   </div>
   <button class="toolbar-button" id="reset-button" (click)="this.buttonResetClick($event)">
     <label>Reset</label>
   </button>
   <form #parametersMenu id="parameters-menu">
-    <input type="text" [(ngModel)]="this.inputText" [ngModelOptions]="{standalone: true}" />
+    <input type="text" [(ngModel)]="this.inputText" [ngModelOptions]="{standalone: true}" maxlength="7" />
     <br>
     <button id="button-create-mask" (click)="this.buttonCreateMaskClick($event)">Create mask</button>
+  </form>
+  <div id="toolbar-bottom">
+    <button type="button" class="toolbar-button" (click)="this.buttonVisualizationMenuClick($event)">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
+        <g>
+          <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
+          <g>
+            <path class="svg-content" d="M11.5,44.77v9.74c0,.53,.45,.99,.99,.99h9.14c.2,0,.4,0,.6,0,.31,0,.56-.15,.76-.35,.62-.61,1.23-1.23,1.85-1.85l3.86-3.86,5.16-5.16,5.78-5.78,5.68-5.68c1.62-1.62,3.24-3.24,4.87-4.87,1.11-1.11,2.22-2.22,3.33-3.33,.66-.66,1.48-1.32,1.79-2.21,.32-.94,0-2-.68-2.69l-2.89-2.89c-1.48-1.48-2.95-2.96-4.43-4.43-1.07-1.06-2.75-1.06-3.82,0-.18,.18-.36,.36-.55,.55l-12.87,12.87c-1.94,1.94-3.88,3.88-5.82,5.82l-5.38,5.38-4.29,4.29-2.46,2.46c-.11,.11-.22,.22-.32,.32-.36,.36-.39,1.04,0,1.4,.39,.36,1.01,.39,1.4,0L44.91,13.74s.05-.05,.08-.07c.05-.05,.03-.03-.06,.04,0,0,.35-.21,.18-.12-.14,.07,.04-.01,.07-.02,.04-.01,.09-.02,.13-.03,.19-.05-.06,.01-.06,0s.19,0,.2,0c.09,0,.11,.05-.06-.01,.05,.02,.14,.03,.2,.04,0,0,.12,.03,.13,.04-.03-.01-.07-.03-.11-.04,.03,.01,.06,.03,.09,.05s.13,.06,.15,.09c0,0-.17-.16-.03-.02l.07,.07c.14,.14,.28,.28,.42,.42l6.58,6.58c.12,.12,.25,.25,.37,.37h0s.05,.06,.05,.06c.1,.1-.04,0-.02-.03,0,0,.21,.35,.12,.18-.07-.14,.01,.04,.02,.07,0,.03,.06,.19,.04,.2-.01,0,0-.27-.01-.06,0,.05,0,.11,0,.17,0,.14,.06-.24,0-.03,0,.04-.02,.09-.03,.13,0,0-.03,.12-.04,.13,.01-.03,.03-.07,.04-.11-.01,.03-.03,.06-.05,.09s-.06,.13-.09,.15c.02-.03,.04-.06,.07-.09-.03,.03-.06,.07-.1,.1-.09,.1-.19,.19-.29,.29l-2.08,2.08-3.65,3.65-4.69,4.69-5.21,5.21-13.49,13.49-2.05,2.05c-.09,.09-.18,.18-.27,.27,.23-.1,.46-.19,.7-.29H12.49c.33,.33,.66,.66,.99,.99v-9.74c0-.52-.45-1.01-.99-.99-.54,.02-.99,.43-.99,.99h0Z"/>
+            <path class="svg-content" d="M35.99,21.27c1.1,1.1,2.2,2.2,3.3,3.3,1.75,1.75,3.5,3.5,5.25,5.25,.4,.4,.8,.8,1.2,1.2,.37,.37,1.02,.38,1.4,0l1.83-1.83c1.17-1.17,2.34-2.34,3.51-3.51,.76-.76,1.53-1.52,2.29-2.29,.91-.91,.99-2.28,.19-3.29-.18-.22-.39-.42-.6-.62l-7.18-7.18c-.77-.77-1.83-1.01-2.84-.56-.4,.18-.7,.51-1.01,.81-.4,.4-.8,.8-1.19,1.19-1.16,1.16-2.33,2.33-3.5,3.5-.84,.84-1.68,1.68-2.51,2.51l-.13,.13c-.37,.36-.39,1.03,0,1.39,.39,.36,1.01,.39,1.4,0,.59-.59,1.17-1.17,1.76-1.76,1.14-1.14,2.29-2.29,3.44-3.44,.79-.79,1.59-1.59,2.38-2.38,.03-.03,.21-.18,.22-.21,0,.02-.15,.09-.06,.05,.03-.01,.06-.03,.09-.05,.15-.09-.16,.04,0,0,.03,0,.29-.06,.13-.03-.18,.03,.12,.02,.13,0,0,0-.2-.04-.1-.01,.03,0,.06,.01,.1,.02,.03,0,.06,.02,.09,.03,.1,.02-.07-.02-.08-.03,0,0,.17,.1,.18,.1,0,0-.14-.13-.06-.05,.02,.02,.05,.05,.08,.07,.17,.16,.34,.34,.5,.5,.98,.98,1.96,1.96,2.93,2.93,1.08,1.08,2.17,2.17,3.26,3.26,.31,.31,.61,.61,.91,.91,.04,.04,.09,.09,.13,.13,.02,.02,.04,.05,.07,.08,.08,.08-.05-.05-.05-.06,0,0,.09,.17,.1,.18,0,0-.06-.18-.03-.08,0,.03,.02,.06,.03,.09,0,.03,.01,.06,.02,.1,.03,.11,0-.18-.01-.06,0,.04-.02,.25,0,.1s-.02,.08-.03,.13c-.04,.17,.08-.14,0,0-.01,.03-.04,.06-.05,.09-.05,.11,.11-.12,.03-.03-.6,.59-1.19,1.19-1.78,1.79l-3.43,3.43-2.42,2.42-.12,.12h1.4c-1.1-1.1-2.2-2.2-3.3-3.3l-5.25-5.25c-.4-.4-.8-.8-1.2-1.2-.36-.36-1.04-.39-1.4,0-.36,.4-.39,1.01,0,1.4h0Z"/>
+          </g>
+        </g>
+      </svg>
+    </button>
+    <button type="button" class="toolbar-button" id="button-reset" (click)="this.buttonResetClick($event)">
+      Reset
+    </button>
+  </div>
+  <form #visualizationMenu id="visualization-menu">
+    <div class="color-selector">
+      <label class="color-selector-label">Segmento</label>
+      <input class="color-selector-input" id="branchColorInput" type="color"
+        [(ngModel)]="this.viewer.segmentColor"
+        [ngModelOptions]="{standalone: true}"
+        (ngModelChange)="this.draw($event)"
+      />
+    </div>
   </form>
   <div id="navigation-bar">
     <button class="navigation-button" id="button-previous" (click)="this.buttonPreviousClick($event)">Anterior</button>
     <button class="navigation-button" id="button-next" [disabled]="true">Siguiente</button>
+  </div>
+  <div #introWindow class="modal" (click)="this.introWindowClick($event)">
+    <div class="modal-intro-content">
+      <label id="label-intro-title">Letters</label>
+      <div class="modal-button-bar">
+        <button class="modal-button-close" (click)="this.introWindowButtonClose($event)">
+          <label>Close</label>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
   

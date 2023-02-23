@@ -205,4 +205,13 @@ export class LandingComponent implements AfterViewInit {
     this.router.navigate(["sandbox"]);
   }
 
+  buttonResetClick(event: Event) {
+    this.resetSimulation();  
+  }
+
+  resetSimulation() {
+    this.setupSimulation();
+    this.run();
+  }
+
 }

@@ -51,6 +51,7 @@
     </div>
   </div>
   <img #maskImage id="mask-image" [src]="this.maskPath" (load)="this.maskImageLoad($event)" />
+  <button class="toolbar-button" id="button-reset" (click)="this.buttonResetClick($event)">Reset</button>
   <div id="navigation-bar">
     <button class="navigation-button" id="button-previous" [disabled]="true">Anterior</button>
     <button class="navigation-button" id="button-next" (click)="this.buttonNextClick($event)">Siguiente</button>

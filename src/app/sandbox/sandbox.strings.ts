@@ -1,4 +1,5 @@
 export class SandboxStrings {
+  static Undefined        = "Por definir";
   static AttractionRadius = "Radio de atracción";
   static AbsorptionRadius = "Radio de absorción";
   static StepLength       = "Tamaño de paso";

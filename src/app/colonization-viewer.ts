@@ -10,6 +10,7 @@ export class ColonizationViewer {
   maskCtx: CanvasRenderingContext2D | null;
   showAttractionZone: boolean;
   showAbsorptionZone: boolean;
+  showAttractors: boolean;
 
   isRunning: boolean;
   isFresh: boolean;
@@ -27,6 +28,7 @@ export class ColonizationViewer {
     this.maskCtx = null;
     this.showAttractionZone = true;
     this.showAbsorptionZone = true;
+    this.showAttractors = true;
     this.isRunning = false;
     this.isFresh   = true;
     if (mask) {
@@ -90,8 +92,10 @@ export class ColonizationViewer {
   }
 
   private drawAttractors(): void {
-    for (let a of this.model.attractors) {
-      this.drawAttractor(a);
+    if (this.showAttractors) {
+      for (let a of this.model.attractors) {
+        this.drawAttractor(a);
+      }
     }
   }
 

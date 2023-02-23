@@ -29,6 +29,18 @@ export class LettersComponent implements AfterViewInit {
     return this.parametersMenuRef.nativeElement;
   }
 
+  @ViewChild("visualizationMenu")
+  private visualizationMenuRef!: ElementRef;
+  private get visualizationMenu(): HTMLFormElement {
+    return this.visualizationMenuRef.nativeElement;
+  }
+
+  @ViewChild("introWindow")
+  private introWindowRef!: ElementRef;
+  private get introWindow(): HTMLDivElement {
+    return this.introWindowRef.nativeElement;
+  }
+
   viewer: ColonizationViewer;
 
   lettersPath: string = "./assets/letters";
@@ -37,6 +49,7 @@ export class LettersComponent implements AfterViewInit {
 
   inputText: string;
   parametersMenuVisible: boolean = false;
+  visualizationMenuVisible: boolean = false;
 
   mask: Mask;
 
@@ -59,6 +72,7 @@ export class LettersComponent implements AfterViewInit {
     this.viewer.setCanvas(this.canvas);
     this.viewer.setMaskCanvas(this.maskCanvas);
     this.fixCanvasDimensions();
+    this.showIntroWindow();
   }
 
   private fixCanvasDimensions() {
@@ -72,6 +86,9 @@ export class LettersComponent implements AfterViewInit {
     if (this.parametersMenuVisible) {
       this.hideParametersMenu();
     }
+    if (this.visualizationMenuVisible) {
+      this.hideVisualizationMenu();
+    }
   }
 
   canvasContextMenu(event: Event): boolean {
@@ -79,6 +96,9 @@ export class LettersComponent implements AfterViewInit {
   }
 
   buttonParametersMenuClick(event: Event) {
+    if (this.visualizationMenuVisible) {
+      this.hideVisualizationMenu();
+    }
     if (this.parametersMenuVisible) {
       this.hideParametersMenu();
     }
@@ -134,15 +154,18 @@ export class LettersComponent implements AfterViewInit {
   }
 
   async buttonCreateMaskClick(event: Event) {
-    await this.downloadLetterImages();
-    this.createMask();
-    this.initializeMask();
-    this.viewer.model = new ColonizationModel(this.mask.width, this.mask.height, this.mask, ColonizationMode.Closed, false);
-    this.viewer.showAbsorptionZone = false;
-    this.viewer.showAttractionZone = false;
-    this.viewer.model.randomizeInteriorAttractors(1000);
-    this.viewer.model.randomizeInteriorNodesWithinCoordinatesInDivisions(1, this.letters.length, 0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
-    this.viewer.run();
+    if (this.inputText.length > 0) {
+      await this.downloadLetterImages();
+      this.createMask();
+      this.initializeMask();
+      this.viewer.model = new ColonizationModel(this.mask.width, this.mask.height, this.mask, ColonizationMode.Closed, false);
+      this.viewer.showAbsorptionZone = false;
+      this.viewer.showAttractionZone = false;
+      this.viewer.showAttractors = false;
+      this.viewer.model.randomizeInteriorAttractors(1000);
+      this.viewer.model.randomizeInteriorNodesWithinCoordinatesInDivisions(1, this.letters.length, 0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
+      this.viewer.run();
+    }
   }
 
   private async downloadLetterImages() {
@@ -192,4 +215,51 @@ export class LettersComponent implements AfterViewInit {
   private navigateToSandbox() {
     this.router.navigate(["sandbox"]);
   }
+
+  introWindowClick(event: Event) {
+    if (event.target == this.introWindow) {
+      this.closeIntroWindow();
+    }
+  }
+
+  introWindowButtonClose(event: Event) {
+    this.closeIntroWindow();
+  }
+
+  private closeIntroWindow() {
+    this.introWindow.style.display = "none";
+  }
+
+
+  buttonIntroClick(event: Event) {
+    this.showIntroWindow();
+  }
+
+  private showIntroWindow() {
+    this.introWindow.style.display = "block";
+  }
+
+  buttonVisualizationMenuClick(event: Event): void {
+    if (this.parametersMenuVisible) {
+      this.hideParametersMenu();
+    }
+    this.showVisualizationMenu();
+  }
+
+  private showVisualizationMenu() {
+    this.visualizationMenu.style.display = "block";
+    this.visualizationMenuVisible = true;
+  }
+
+  private hideVisualizationMenu() {
+    this.visualizationMenu.style.display = "none";
+    this.visualizationMenuVisible = false;
+  }
+
+  draw(event: Event) {
+    if (!this.viewer.isRunning) {
+      this.viewer.drawScene();
+    }
+  }
+  
 }

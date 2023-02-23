@@ -45,6 +45,12 @@ export class SandboxComponent implements AfterViewInit {
     return this.visualizationMenuRef.nativeElement;
   }
 
+  @ViewChild("introWindow")
+  private introWindowRef!: ElementRef;
+  private get introWindow(): HTMLDivElement {
+    return this.introWindowRef.nativeElement;
+  }
+
   parametersMenuVisible: boolean = false;
   visualizationMenuVisible: boolean = false;
 
@@ -88,6 +94,7 @@ export class SandboxComponent implements AfterViewInit {
     this.viewer.setCanvas(this.canvas);
     this.viewer.setMaskCanvas(this.maskCanvas);
     this.fixCanvasDimensions();
+    this.showIntroWindow();
   }
 
   private drawMaskImage() {
@@ -128,7 +135,7 @@ export class SandboxComponent implements AfterViewInit {
     }
   }
 
-  clickResetButton(event: Event) {
+  buttonResetClick(event: Event) {
     this.viewer.clearElements();
     this.viewer.drawScene();
   }
@@ -262,7 +269,7 @@ export class SandboxComponent implements AfterViewInit {
     return false;
   }
 
-  visualizationMenuButtonClick(event: Event): void {
+  buttonVisualizationMenuClick(event: Event): void {
     if (this.parametersMenuVisible) {
       this.hideParametersMenu();
     }
@@ -294,4 +301,27 @@ export class SandboxComponent implements AfterViewInit {
   private navigateToLetters() {
     this.router.navigate(["letters"]);
   }
+
+  introWindowClick(event: Event) {
+    if (event.target == this.introWindow) {
+      this.closeIntroWindow();
+    }
+  }
+
+  introWindowButtonClose(event: Event) {
+    this.closeIntroWindow();
+  }
+
+  private closeIntroWindow() {
+    this.introWindow.style.display = "none";
+  }
+
+  buttonIntroClick(event: Event) {
+    this.showIntroWindow();
+  }
+
+  private showIntroWindow() {
+    this.introWindow.style.display = "block";
+  }
+  
 }
