@@ -3,7 +3,7 @@
   "short_name": "2d-colonization",
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
-  "display": "standalone",
+  "display": "fullscreen",
   "orientation": "landscape",
   "scope": "./",
   "start_url": "./",
