@@ -41,24 +41,28 @@ export class LettersComponent implements AfterViewInit {
     return this.introWindowRef.nativeElement;
   }
 
-  viewer: ColonizationViewer;
+  viewer!: ColonizationViewer;
 
   lettersPath: string = "./assets/letters";
 
   letters: Array<HTMLImageElement> = [];
 
-  inputText: string;
+  inputText!: string;
   parametersMenuVisible: boolean = false;
   visualizationMenuVisible: boolean = false;
 
-  mask: Mask;
+  mask!: Mask;
 
   private numAttractors = 1000;
   private attractionRadius = 128;
-  private absorptionRadius = 16;
+  private absorptionRadius = 1;
   private stepLength = 2;
 
   constructor(private router: Router) {
+    this.initializeValues();
+  }
+
+  private initializeValues() {
     this.inputText = "";
     this.mask = new Mask(0, 0);
     this.viewer = new ColonizationViewer(this.mask);
@@ -138,7 +142,15 @@ export class LettersComponent implements AfterViewInit {
   }
 
   buttonResetClick(event: Event) {
+    this.viewer.clearElements();
+    this.setupSimulation();
+    this.viewer.run();
+  }
 
+  private setupSimulation() {
+    this.viewer.model.randomizeInteriorAttractors(this.numAttractors);
+    this.viewer.model.randomizeInteriorNodesWithinCoordinatesInDivisions(
+      1, this.letters.length, 0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
   }
 
   private showParametersMenu() {
@@ -170,8 +182,7 @@ export class LettersComponent implements AfterViewInit {
       this.viewer.showAbsorptionZone = false;
       this.viewer.showAttractionZone = false;
       this.viewer.showAttractors = false;
-      this.viewer.model.randomizeInteriorAttractors(this.numAttractors);
-      this.viewer.model.randomizeInteriorNodesWithinCoordinatesInDivisions(1, this.letters.length, 0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
+      this.setupSimulation();
       this.viewer.run();
     }
   }
