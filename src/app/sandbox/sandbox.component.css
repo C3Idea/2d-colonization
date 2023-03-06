@@ -34,7 +34,7 @@
   left: 0;
   z-index: 0;
   display: none;
-  background-color: black;
+  background-color: rgb(207, 37, 37);
 }
 
 #toolbar-top {
@@ -67,11 +67,11 @@
 
 #visualization-menu {
   width: 300px;
-  height: auto;
-  background-color: #9DBEBB;
+  height: 180px;
+  background-color: #f4e9cd;
   z-index: 1;
   position: absolute;
-  bottom: 80px;
+  bottom: 5px;
   left:   5px;
   display: none;
   border-radius: 5px;
@@ -81,33 +81,33 @@
 }
 
 #button-reset {
-  background-color: white;
+  background-color: #004B23;
   position: absolute;
 }
 
 .svg-content {
-  fill: aqua;
+  fill: #007200;
 }
 
 .svg-border {
   fill: none;
-  stroke: yellow;
+  stroke: #004B23;
   stroke-miterlimit: 10;
   stroke-width: 3px;
 }
 
 .toolbar-button:hover .svg-content {
-  fill: red;
+  fill: #70E000;
 }
 
 .toolbar-button:hover .svg-border {
-  stroke: blue;
+  stroke: #008000;
 }
 
 #parameters-menu {
   width: 300px;
   height: auto;
-  background-color: #9DBEBB;
+  background-color: #f4e9cd;
   opacity: 0.8;
   position: absolute;
   top: 75px;
@@ -132,6 +132,7 @@
 .parameter-label {
   position: relative;
   display: inline-block;
+  line-height: 50px;
   width: 200px;
   height: 100%;
 }
@@ -284,12 +285,12 @@ input:checked + .switch-slider:before {
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  background-color: #006400 ; /* Fallback color */
+  background-color: rgba(0,100,0,0.4); /* Black w/ opacity */
 }
 
 .modal-intro-content {
-  background-color: white;
+  background-color: #f4e9cd;
   margin: 15% auto;
   width: 50%;
   height: auto;
