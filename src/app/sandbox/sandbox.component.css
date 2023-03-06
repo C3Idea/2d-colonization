@@ -67,11 +67,11 @@
 
 #visualization-menu {
   width: 300px;
-  height: 180px;
+  height: auto;
   background-color: #9DBEBB;
   z-index: 1;
   position: absolute;
-  bottom: 5px;
+  bottom: 80px;
   left:   5px;
   display: none;
   border-radius: 5px;
@@ -132,7 +132,6 @@
 .parameter-label {
   position: relative;
   display: inline-block;
-  line-height: 50px;
   width: 200px;
   height: 100%;
 }

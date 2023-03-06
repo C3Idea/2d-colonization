@@ -62,18 +62,6 @@
   <form #parametersMenu id="parameters-menu">
     <li class="form-row">
       <label class="parameter-label">
-        {{SandboxStrings.Colonization}}
-      </label>
-      <select class="parameter-select" [(ngModel)]="this.viewer.model.mode" (change)="this.modeSelectChange($event)"
-        [ngModelOptions]="{standalone: true}">
-        <option value="0">{{SandboxStrings.OpenColonization}}</option>
-        <option value="1">{{SandboxStrings.ClosedColonization}}</option>
-      </select>
-      <input type="image" class="parameter-help-button"
-        src="./assets/icons/icon_info_i.svg" />
-    </li>
-    <li class="form-row">
-      <label class="parameter-label">
         {{SandboxStrings.Mask}}
       </label>
       <select class="parameter-select" (change)="this.maskSelectChange($event)">
@@ -204,7 +192,7 @@
       <label id="label-intro-title">Sandbox</label>
       <div class="modal-button-bar">
         <button class="modal-button-close" (click)="this.introWindowButtonClose($event)">
-          <label>Close</label>
+          <label>{{SandboxStrings.Close}}</label>
         </button>
       </div>
     </div>

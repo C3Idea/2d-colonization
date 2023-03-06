@@ -192,13 +192,6 @@ export class SandboxComponent implements AfterViewInit {
     this.maskPath = this.allMaskPaths[index];
   }
 
-  modeSelectChange(event: Event) {
-    if (this.mask) {
-      this.viewer.model = new ColonizationModel(this.mask.width, this.mask.height, this.mask, this.colonizationMode, false);
-      this.viewer.drawScene();
-    }
-  }
-
   autoResumeChange(event: Event) {
     this.resumeColonization();
   }
@@ -273,7 +266,12 @@ export class SandboxComponent implements AfterViewInit {
     if (this.parametersMenuVisible) {
       this.hideParametersMenu();
     }
-    this.showVisualizationMenu();
+    if (this.visualizationMenuVisible) {
+      this.hideVisualizationMenu();
+    }
+    else {
+      this.showVisualizationMenu();
+    }
   }
 
   private showVisualizationMenu() {

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ColonizationMode, ColonizationModel } from '../colonization-model';
 import { ColonizationViewer } from '../colonization-viewer';
 import { Mask } from '../mask';
+import { LettersStrings } from './letters.strings';
 
 @Component({
   selector: 'app-letters',
@@ -10,6 +11,8 @@ import { Mask } from '../mask';
   styleUrls: ['./letters.component.css']
 })
 export class LettersComponent implements AfterViewInit {
+
+  LettersStrings = LettersStrings;
 
   @ViewChild("canvas")
   private canvasRef!: ElementRef;

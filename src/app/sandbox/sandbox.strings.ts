@@ -11,4 +11,5 @@ export class SandboxStrings {
   static ShowAbsorptionRadius = "Mostrar radio de absorción";
   static RandomAttractors = "Atractores aleatorios";
   static RandomNodes = "Nodos aleatorios";
+  static Close       = "Cerrar";
 }

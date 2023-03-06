@@ -50,13 +50,10 @@
       </svg>
     </button>
   </div>
-  <button class="toolbar-button" id="reset-button" (click)="this.buttonResetClick($event)">
-    <label>Reset</label>
-  </button>
   <form #parametersMenu id="parameters-menu">
     <input type="text" [(ngModel)]="this.inputText" [ngModelOptions]="{standalone: true}" maxlength="7" />
     <br>
-    <button id="button-create-mask" (click)="this.buttonCreateMaskClick($event)">Create mask</button>
+    <button id="button-create-mask" (click)="this.buttonCreateMaskClick($event)">{{LettersStrings.CreateMask}}</button>
   </form>
   <div id="toolbar-bottom">
     <button type="button" class="toolbar-button" (click)="this.buttonVisualizationMenuClick($event)">
@@ -93,7 +90,7 @@
       <label id="label-intro-title">Letters</label>
       <div class="modal-button-bar">
         <button class="modal-button-close" (click)="this.introWindowButtonClose($event)">
-          <label>Close</label>
+          <label>{{LettersStrings.Close}}</label>
         </button>
       </div>
     </div>
