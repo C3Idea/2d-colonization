@@ -58,7 +58,13 @@ export class LandingComponent implements AfterViewInit {
     return this.maskImageRef.nativeElement;
   }
 
-  maskPath: string = "./assets/masks/leaf.png";
+  @ViewChild("introWindow")
+  private introWindowRef!: ElementRef;
+  private get introWindow(): HTMLDivElement {
+    return this.introWindowRef.nativeElement;
+  }
+
+  maskPath: string = "./assets/masks/leaf2.png";
 
   private mask: Mask;
 
@@ -71,10 +77,16 @@ export class LandingComponent implements AfterViewInit {
   constructor(private router: Router) {
     this.mask = new Mask(0, 0);
     this.leftViewer = new ColonizationViewer(this.mask);
+    this.leftViewer.showAttractionZone = true;
+    this.leftViewer.showAbsorptionZone = false;
     this.leftViewer.model.disturbDirection = false;
     this.middleViewer = new ColonizationViewer(this.mask);
+    this.middleViewer.showAttractionZone = false;
+    this.middleViewer.showAbsorptionZone = true;
     this.middleViewer.model.disturbDirection = false;
     this.rightViewer = new ColonizationViewer(this.mask);
+    this.rightViewer.showAttractionZone = false;
+    this.rightViewer.showAbsorptionZone = false;
     this.rightViewer.model.disturbDirection = false;
   }
 
@@ -212,6 +224,28 @@ export class LandingComponent implements AfterViewInit {
   resetSimulation() {
     this.setupSimulation();
     this.run();
+  }
+
+  introWindowClick(event: Event) {
+    if (event.target == this.introWindow) {
+      this.closeIntroWindow();
+    }
+  }
+
+  introWindowButtonClose(event: Event) {
+    this.closeIntroWindow();
+  }
+
+  private closeIntroWindow() {
+    this.introWindow.style.display = "none";
+  }
+
+  buttonIntroClick(event: Event) {
+    this.showIntroWindow();
+  }
+
+  private showIntroWindow() {
+    this.introWindow.style.display = "block";
   }
 
 }

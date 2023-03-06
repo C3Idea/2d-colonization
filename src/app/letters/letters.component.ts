@@ -59,7 +59,7 @@ export class LettersComponent implements AfterViewInit {
   private numAttractors = 1000;
   private attractionRadius = 128;
   private absorptionRadius = 1;
-  private stepLength = 2;
+  private stepLength = 3;
 
   constructor(private router: Router) {
     this.initializeValues();
@@ -265,7 +265,12 @@ export class LettersComponent implements AfterViewInit {
     if (this.parametersMenuVisible) {
       this.hideParametersMenu();
     }
-    this.showVisualizationMenu();
+    if (this.visualizationMenuVisible) {
+      this.hideVisualizationMenu();
+    }
+    else {
+      this.showVisualizationMenu();
+    }
   }
 
   private showVisualizationMenu() {

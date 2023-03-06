@@ -12,4 +12,6 @@ export class SandboxStrings {
   static RandomAttractors = "Atractores aleatorios";
   static RandomNodes = "Nodos aleatorios";
   static Close       = "Cerrar";
+  static IntroTitle  = "Dibuja tu propia hoja";
+  static IntroBody   = "Ahora es tu turno de crear tantas hojas como quieras. Puedes modificar los parámetros del algoritmo de colonización, colocar puntos de crecimiento y atractores donde quieras dentro del area blanca. Escoge que color te gusta y decide si quieres ver los radios de atracción y absorción. Y una vez que este lista tu obra de arte, puedes descargarla y volver a empezar. ¡Diviértete!";
 }

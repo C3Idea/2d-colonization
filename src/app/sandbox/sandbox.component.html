@@ -138,8 +138,15 @@
         </g>
       </svg>
     </button>
-    <button type="button" class="toolbar-button" id="button-reset" (click)="this.buttonResetClick($event)">
-      Reset
+    <button type="button" class="toolbar-button" (click)="this.buttonResetClick($event)">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
+        <g>
+          <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
+          <g>
+            <path class="svg-content" d="M15.49,40.79l5.72-3.39c-1.21-2.07-1.87-4.5-1.87-7.08,0-7.84,6.37-14.17,14.17-14.17s14.17,6.37,14.17,14.17-6.37,14.17-14.17,14.17v-6.43s-15.53,9.76-15.53,9.76l15.53,9.71v-6.43c11.48,0,20.85-9.36,20.85-20.85s-9.36-20.79-20.85-20.79S12.65,18.83,12.65,30.31c0,3.79,1.06,7.39,2.83,10.47h0Z"/>
+          </g>
+        </g>
+      </svg>
     </button>
   </div>
   <form #visualizationMenu id="visualization-menu">
@@ -184,12 +191,31 @@
     <label for="show-prune-zone-input">{{SandboxStrings.ShowAbsorptionRadius}}</label>
   </form>
   <div id="navigation-bar">
-    <button class="navigation-button" id="button-previous" (click)="this.buttonPreviousClick($event)">Anterior</button>
-    <button class="navigation-button" id="button-next" (click)="this.buttonNextClick($event)">Siguiente</button>
+    <button type="button" class="toolbar-button" (click)="this.buttonPreviousClick($event)">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 65 65">
+        <g>
+          <g>
+            <rect class="svg-border" x=".5" y=".5" width="64" height="64" rx="8.27" ry="8.27"/>
+            <path class="svg-content" d="M18.72,27.55l14.52-11.55,4.82,6.06-8.21,6.57h22.63v7.8H29.86l8.21,6.52-4.82,6.06-14.52-11.55-6.21-4.93,6.21-4.98Z"/>
+          </g>
+        </g>
+      </svg>
+    </button>
+    <button type="button" class="toolbar-button" (click)="this.buttonNextClick($event)">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 65 65">
+        <g>
+          <g>
+            <rect class="svg-border" x=".5" y=".5" width="64" height="64" rx="8.27" ry="8.27"/>
+            <path class="svg-content" d="M46.28,37.45l-14.52,11.55-4.82-6.06,8.21-6.57H12.51v-7.8h22.63l-8.21-6.52,4.82-6.06,14.52,11.55,6.21,4.93-6.21,4.98Z"/>
+          </g>
+        </g>
+      </svg>
+    </button>
   </div>
   <div #introWindow class="modal" (click)="this.introWindowClick($event)">
     <div class="modal-intro-content">
-      <label id="label-intro-title">Sandbox</label>
+      <label id="label-intro-title">{{SandboxStrings.IntroTitle}}</label>
+      <label id="label-intro-body">{{SandboxStrings.IntroBody}}</label>
       <div class="modal-button-bar">
         <button class="modal-button-close" (click)="this.introWindowButtonClose($event)">
           <label>{{SandboxStrings.Close}}</label>
