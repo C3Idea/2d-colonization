@@ -98,6 +98,7 @@ export class LandingComponent implements AfterViewInit {
     this.rightViewer.setCanvas(this.rightCanvas);
     this.rightViewer.setMaskCanvas(this.rightMaskCanvas);
     this.fixCanvasDimensions();
+    this.showIntroWindow();
   }
 
   private setupSimulation() {
