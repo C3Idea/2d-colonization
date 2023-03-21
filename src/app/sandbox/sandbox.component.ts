@@ -136,8 +136,17 @@ export class SandboxComponent implements AfterViewInit {
   }
 
   buttonResetClick(event: Event) {
-    this.viewer.clearElements();
+    this.resetSimulation();
+  }
+
+  private resetSimulation() {
+    this.stopAndClearSimulation();
     this.viewer.drawScene();
+  }
+
+  private stopAndClearSimulation() {
+    this.stopSimulation();
+    this.clearSimulationElements();
   }
 
   async clickGoButton(event: Event) {
@@ -289,6 +298,8 @@ export class SandboxComponent implements AfterViewInit {
   }
 
   private navigateToLanding() {
+    // Stop process before navigation
+    this.stopAndClearSimulation();
     this.router.navigate(["landing"]);
   }
 
@@ -297,6 +308,8 @@ export class SandboxComponent implements AfterViewInit {
   }
 
   private navigateToLetters() {
+    // Stop process before navigation
+    this.stopAndClearSimulation();
     this.router.navigate(["letters"]);
   }
 
@@ -320,6 +333,14 @@ export class SandboxComponent implements AfterViewInit {
 
   private showIntroWindow() {
     this.introWindow.style.display = "block";
+  }
+
+  private stopSimulation() {
+    this.viewer.stop();
+  }
+
+  private clearSimulationElements() {
+    this.viewer.clearElements();
   }
   
 }

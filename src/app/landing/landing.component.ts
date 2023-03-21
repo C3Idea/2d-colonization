@@ -101,9 +101,6 @@ export class LandingComponent implements AfterViewInit {
   }
 
   private setupSimulation() {
-    this.leftViewer.clearElements();
-    this.middleViewer.clearElements();
-    this.rightViewer.clearElements();
     this.createSeedNodes();
     this.createAttractors();
   }
@@ -205,6 +202,7 @@ export class LandingComponent implements AfterViewInit {
   async run(): Promise<void> {
     await Promise.all([this.leftViewer.run(), this.middleViewer.run(), this.rightViewer.run()]);
     await sleep(5000);
+    this.clearSimulationElements();
     this.setupSimulation();
     await this.run();
   }
@@ -214,7 +212,26 @@ export class LandingComponent implements AfterViewInit {
   }
   
   private navigateToSandbox() {
+    // Stop all processes before changing URL
+    this.stopAndClearSimulation();
     this.router.navigate(["sandbox"]);
+  }
+
+  private stopSimulation() {
+    this.leftViewer.stop();
+    this.middleViewer.stop();
+    this.rightViewer.stop();
+  }
+
+  private clearSimulationElements() {
+    this.leftViewer.clearElements();
+    this.middleViewer.clearElements();
+    this.rightViewer.clearElements();
+  }
+
+  private stopAndClearSimulation() {
+    this.stopSimulation();
+    this.clearSimulationElements();
   }
 
   buttonResetClick(event: Event) {
@@ -222,6 +239,7 @@ export class LandingComponent implements AfterViewInit {
   }
 
   resetSimulation() {
+    this.stopAndClearSimulation();
     this.setupSimulation();
     this.run();
   }

@@ -76,10 +76,10 @@ export class ColonizationViewer {
 
   async run(): Promise<void> {
     this.isRunning = true;
-    while (true) {
+    while (this.isRunning) {
       this.drawScene();
       if (!this.model.step()) {
-        break;
+        this.isRunning = false;
       }
       else {
         this.isFresh = false;
@@ -87,8 +87,11 @@ export class ColonizationViewer {
       await sleep(1);
     }
     this.drawScene();
-    this.isRunning = false;
     //console.log("Run finished!", this.model.nodes.length, this.model.attractors.length);
+  }
+
+  stop() {
+    this.isRunning = false;
   }
 
   private drawAttractors(): void {

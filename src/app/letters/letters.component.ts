@@ -145,7 +145,11 @@ export class LettersComponent implements AfterViewInit {
   }
 
   buttonResetClick(event: Event) {
-    this.viewer.clearElements();
+    this.resetSimulation();
+  }
+
+  private resetSimulation() {
+    this.stopAndClearSimulation();
     this.setupSimulation();
     this.viewer.run();
   }
@@ -175,6 +179,7 @@ export class LettersComponent implements AfterViewInit {
 
   async buttonCreateMaskClick(event: Event) {
     if (this.inputText.length > 0) {
+      this.stopAndClearSimulation();
       await this.downloadLetterImages();
       this.createMask();
       this.initializeMask();
@@ -192,7 +197,7 @@ export class LettersComponent implements AfterViewInit {
 
   private async downloadLetterImages() {
     const tempInputText = this.inputText.toUpperCase();
-    console.log(tempInputText);
+    //console.log(tempInputText);
     let n = this.inputText.length;
     this.letters = [];
     for (let i = 0; i < n; i++) {
@@ -235,7 +240,22 @@ export class LettersComponent implements AfterViewInit {
   }
 
   private navigateToSandbox() {
+    // Stop process before navigation
+    this.stopAndClearSimulation();
     this.router.navigate(["sandbox"]);
+  }
+
+  private stopSimulation() {
+    this.viewer.stop();
+  }
+
+  private stopAndClearSimulation() {
+    this.stopSimulation();
+    this.clearSimulationElements();
+  }
+
+  private clearSimulationElements() {
+    this.viewer.clearElements();
   }
 
   introWindowClick(event: Event) {
