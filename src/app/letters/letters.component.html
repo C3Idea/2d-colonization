@@ -1,4 +1,4 @@
-<div id="main-container">
+<div id="main-container" (mousedown)="this.mainContainerMouseDown($event)">
   <canvas #canvas id="canvas" (mousedown)="this.canvasMouseDown($event)" (contextmenu)="this.canvasContextMenu($event)"> 
   </canvas>
   <canvas #maskCanvas id="mask-canvas"></canvas>

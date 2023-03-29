@@ -1,4 +1,4 @@
-<div id="main-container">
+<div id="main-container" (mousedown)="this.mainContainerMouseDown($event)">
   <canvas #canvas id="canvas" (mousedown)="this.canvasMouseDown($event)" (contextmenu)="this.canvasContextMenu($event)"> 
   </canvas>
   <canvas #maskCanvas id="mask-canvas"></canvas>
@@ -65,9 +65,9 @@
         {{SandboxStrings.Mask}}
       </label>
       <select class="parameter-select" (change)="this.maskSelectChange($event)">
-        <option value="0">elipse</option>
+        <option value="0">maple</option>
         <option value="1">ampersand</option>
-        <option value="2">rectas</option>
+        <option value="2">rectángulo</option>
       </select>
       <input type="image" class="parameter-help-button"
         src="./assets/icons/icon_info_i.svg" />

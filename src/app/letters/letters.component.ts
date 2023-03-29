@@ -94,6 +94,15 @@ export class LettersComponent implements AfterViewInit {
     this.maskCanvas.height = this.maskCanvas.clientHeight;
   }
 
+  mainContainerMouseDown(event: Event) {
+    if (this.parametersMenuVisible) {
+      this.hideParametersMenu();
+    }
+    if (this.visualizationMenuVisible) {
+      this.hideVisualizationMenu();
+    }
+  }
+
   canvasMouseDown(event: Event) {
     if (this.parametersMenuVisible) {
       this.hideParametersMenu();

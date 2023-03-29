@@ -2,26 +2,6 @@
   <label id="label-title">
     {{LandingStrings.LabelTitle}}
   </label>
-  <br>
-  <label id="label-body">
-    {{LandingStrings.LabelBody}}
-  </label>
-  <br>
-  <label id="label-body">
-    {{LandingStrings.LabelBody2}}
-  </label>
-  <br>
-  <label id="label-body">
-    {{LandingStrings.LabelBody3}}
-  </label>
-  <br>
-  <label id="label-body">
-    {{LandingStrings.LabelBody4}}
-  </label>
-  <br>
-  <label id="label-body">
-    {{LandingStrings.LabelBody5}}
-  </label>
   <div id="toolbar-top">
     <button type="button" class="toolbar-button" (click)="this.buttonIntroClick($event)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
@@ -99,6 +79,29 @@
       <label class="label-parameter">
         {{LandingStrings.StepLength}}
       </label>
+    </div>
+    <div class="column">
+      <div id="explanation-container">
+        <label id="label-body">
+          {{LandingStrings.LabelBody}}
+        </label>
+        <br>
+        <label id="label-body">
+          {{LandingStrings.LabelBody2}}
+        </label>
+        <br>
+        <label id="label-body">
+          {{LandingStrings.LabelBody3}}
+        </label>
+        <br>
+        <label id="label-body">
+          {{LandingStrings.LabelBody4}}
+        </label>
+        <br>
+        <label id="label-body">
+          {{LandingStrings.LabelBody5}}
+        </label>
+      </div>
     </div>
   </div>
   <img #maskImage id="mask-image" [src]="this.maskPath" (load)="this.maskImageLoad($event)" />

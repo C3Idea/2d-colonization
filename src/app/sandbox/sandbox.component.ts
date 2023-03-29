@@ -68,9 +68,9 @@ export class SandboxComponent implements AfterViewInit {
   toggleSwitchChecked: boolean = false;
 
   allMaskPaths: Array<string> = [
-    "./assets/masks/elipse.png",
+    "./assets/masks/maple.png",
     "./assets/masks/ampersand.png",
-    "./assets/masks/rectas.png"
+    "./assets/masks/rectangle.png"
   ];
   maskPath: string = this.allMaskPaths[0];
   mask!: Mask;
@@ -167,8 +167,9 @@ export class SandboxComponent implements AfterViewInit {
   }
 
   createNewNode(cx: number, cy: number) {
-    const x = cx - this.canvas.clientLeft;
-    const y = cy - this.canvas.clientTop;
+    const rect = this.canvas.getBoundingClientRect();
+    const x = cx - rect.left;
+    const y = cy - rect.top;
     if (this.viewer.model.createNode(x, y)) {
       this.resumeColonization();
     }
@@ -341,6 +342,15 @@ export class SandboxComponent implements AfterViewInit {
 
   private clearSimulationElements() {
     this.viewer.clearElements();
+  }
+
+  mainContainerMouseDown(event: Event) {
+    if (this.parametersMenuVisible) {
+      this.hideParametersMenu();
+    }
+    if (this.visualizationMenuVisible) {
+      this.hideVisualizationMenu();
+    }
   }
   
 }
