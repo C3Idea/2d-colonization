@@ -20,16 +20,88 @@ export class LettersComponent implements AfterViewInit {
     return this.mainContainerRef.nativeElement;
   }
 
-  @ViewChild("canvas")
-  private canvasRef!: ElementRef;
-  private get canvas(): HTMLCanvasElement {
-    return this.canvasRef.nativeElement;
+  @ViewChild("canvas0")
+  private canvas0Ref!: ElementRef;
+  private get canvas0(): HTMLCanvasElement {
+    return this.canvas0Ref.nativeElement;
   }
 
-  @ViewChild("maskCanvas")
-  private maskCanvasRef!: ElementRef;
-  private get maskCanvas(): HTMLCanvasElement {
-    return this.maskCanvasRef.nativeElement;
+  @ViewChild("maskCanvas0")
+  private maskCanvas0Ref!: ElementRef;
+  private get maskCanvas0(): HTMLCanvasElement {
+    return this.maskCanvas0Ref.nativeElement;
+  }
+
+  @ViewChild("canvas1")
+  private canvas1Ref!: ElementRef;
+  private get canvas1(): HTMLCanvasElement {
+    return this.canvas1Ref.nativeElement;
+  }
+
+  @ViewChild("maskCanvas1")
+  private maskCanvas1Ref!: ElementRef;
+  private get maskCanvas1(): HTMLCanvasElement {
+    return this.maskCanvas1Ref.nativeElement;
+  }
+
+  @ViewChild("canvas2")
+  private canvas2Ref!: ElementRef;
+  private get canvas2(): HTMLCanvasElement {
+    return this.canvas2Ref.nativeElement;
+  }
+
+  @ViewChild("maskCanvas2")
+  private maskCanvas2Ref!: ElementRef;
+  private get maskCanvas2(): HTMLCanvasElement {
+    return this.maskCanvas2Ref.nativeElement;
+  }
+
+  @ViewChild("canvas3")
+  private canvas3Ref!: ElementRef;
+  private get canvas3(): HTMLCanvasElement {
+    return this.canvas3Ref.nativeElement;
+  }
+
+  @ViewChild("maskCanvas3")
+  private maskCanvas3Ref!: ElementRef;
+  private get maskCanvas3(): HTMLCanvasElement {
+    return this.maskCanvas3Ref.nativeElement;
+  }
+
+  @ViewChild("canvas4")
+  private canvas4Ref!: ElementRef;
+  private get canvas4(): HTMLCanvasElement {
+    return this.canvas4Ref.nativeElement;
+  }
+
+  @ViewChild("maskCanvas4")
+  private maskCanvas4Ref!: ElementRef;
+  private get maskCanvas4(): HTMLCanvasElement {
+    return this.maskCanvas4Ref.nativeElement;
+  }
+
+  @ViewChild("canvas5")
+  private canvas5Ref!: ElementRef;
+  private get canvas5(): HTMLCanvasElement {
+    return this.canvas5Ref.nativeElement;
+  }
+
+  @ViewChild("maskCanvas5")
+  private maskCanvas5Ref!: ElementRef;
+  private get maskCanvas5(): HTMLCanvasElement {
+    return this.maskCanvas5Ref.nativeElement;
+  }
+
+  @ViewChild("canvas6")
+  private canvas6Ref!: ElementRef;
+  private get canvas6(): HTMLCanvasElement {
+    return this.canvas6Ref.nativeElement;
+  }
+
+  @ViewChild("maskCanvas6")
+  private maskCanvas6Ref!: ElementRef;
+  private get maskCanvas6(): HTMLCanvasElement {
+    return this.maskCanvas6Ref.nativeElement;
   }
 
   @ViewChild("parametersMenu")
@@ -50,54 +122,111 @@ export class LettersComponent implements AfterViewInit {
     return this.introWindowRef.nativeElement;
   }
 
-  viewer!: ColonizationViewer;
+  viewers!: Array<ColonizationViewer>;
 
   lettersPath: string = "./assets/letters";
 
+  maxMaskLength: number;
   letters: Array<HTMLImageElement> = [];
 
   inputText!: string;
   parametersMenuVisible: boolean = false;
   visualizationMenuVisible: boolean = false;
 
-  mask!: Mask;
+  masks!: Array<Mask>;
 
-  private numAttractors = 1000;
+  private numAttractors = 100;
   private attractionRadius = 128;
-  private absorptionRadius = 1;
+  private absorptionRadius = 2;
   private stepLength = 3;
 
   constructor(private router: Router) {
+    this.maxMaskLength = 7;
     this.initializeValues();
   }
 
   private initializeValues() {
     this.inputText = "";
-    this.mask = new Mask(0, 0);
-    this.viewer = new ColonizationViewer(this.mask);
+    this.masks = new Array<Mask>(this.maxMaskLength);
+    this.viewers = new Array<ColonizationViewer>(this.maxMaskLength);
+    for (let i = 0; i < this.maxMaskLength; i++) {
+      this.masks[i] = new Mask(0, 0);
+      this.viewers[i] = new ColonizationViewer(this.masks[i]);
+    }
   }
 
   @HostListener("window:resize", ["$event"])
   onWindowResize(event: Event) {
     this.fixCanvasDimensions();
-    this.createMask();
-    this.initializeMask();
-    this.viewer.model.update(this.mask);
-    this.viewer.drawScene();
+    this.createMasks();
+    this.updateViewerModels();
+    this.drawScenes();
+  }
+
+  private updateViewerModels() {
+    for (let i = 0; i < this.maxMaskLength; i++) {
+      this.viewers[i].model.update(this.masks[i]);
+    }
+  }
+
+  private drawScenes() {
+    for (let i = 0; i < this.maxMaskLength; i++) {
+      this.viewers[i].drawScene();
+    }
   }
 
   ngAfterViewInit(): void {
-    this.viewer.setCanvas(this.canvas);
-    this.viewer.setMaskCanvas(this.maskCanvas);
+    this.setViewers();
     this.fixCanvasDimensions();
     this.showIntroWindow();
   }
 
+  private setViewers() {
+    this.viewers[0].setCanvas(this.canvas0);
+    this.viewers[0].setMaskCanvas(this.maskCanvas0);
+    this.viewers[1].setCanvas(this.canvas1);
+    this.viewers[1].setMaskCanvas(this.maskCanvas1);
+    this.viewers[2].setCanvas(this.canvas2);
+    this.viewers[2].setMaskCanvas(this.maskCanvas2);
+    this.viewers[3].setCanvas(this.canvas3);
+    this.viewers[3].setMaskCanvas(this.maskCanvas3);
+    this.viewers[4].setCanvas(this.canvas4);
+    this.viewers[4].setMaskCanvas(this.maskCanvas4);
+    this.viewers[5].setCanvas(this.canvas5);
+    this.viewers[5].setMaskCanvas(this.maskCanvas5);
+    this.viewers[6].setCanvas(this.canvas6);
+    this.viewers[6].setMaskCanvas(this.maskCanvas6);
+  }
+
   private fixCanvasDimensions() {
-    this.canvas.width  = this.canvas.clientWidth;
-    this.canvas.height = this.canvas.clientHeight;
-    this.maskCanvas.width  = this.maskCanvas.clientWidth;
-    this.maskCanvas.height = this.maskCanvas.clientHeight;
+    this.canvas0.width  = this.canvas0.clientWidth;
+    this.canvas0.height = this.canvas0.clientHeight;
+    this.maskCanvas0.width  = this.maskCanvas0.clientWidth;
+    this.maskCanvas0.height = this.maskCanvas0.clientHeight;
+    this.canvas1.width  = this.canvas1.clientWidth;
+    this.canvas1.height = this.canvas1.clientHeight;
+    this.maskCanvas1.width  = this.maskCanvas1.clientWidth;
+    this.maskCanvas1.height = this.maskCanvas1.clientHeight;
+    this.canvas2.width  = this.canvas2.clientWidth;
+    this.canvas2.height = this.canvas2.clientHeight;
+    this.maskCanvas2.width  = this.maskCanvas2.clientWidth;
+    this.maskCanvas2.height = this.maskCanvas2.clientHeight;
+    this.canvas3.width  = this.canvas3.clientWidth;
+    this.canvas3.height = this.canvas3.clientHeight;
+    this.maskCanvas3.width  = this.maskCanvas3.clientWidth;
+    this.maskCanvas3.height = this.maskCanvas3.clientHeight;
+    this.canvas4.width  = this.canvas4.clientWidth;
+    this.canvas4.height = this.canvas4.clientHeight;
+    this.maskCanvas4.width  = this.maskCanvas4.clientWidth;
+    this.maskCanvas4.height = this.maskCanvas4.clientHeight;
+    this.canvas5.width  = this.canvas5.clientWidth;
+    this.canvas5.height = this.canvas5.clientHeight;
+    this.maskCanvas5.width  = this.maskCanvas5.clientWidth;
+    this.maskCanvas5.height = this.maskCanvas5.clientHeight;
+    this.canvas6.width  = this.canvas6.clientWidth;
+    this.canvas6.height = this.canvas6.clientHeight;
+    this.maskCanvas6.width  = this.maskCanvas6.clientWidth;
+    this.maskCanvas6.height = this.maskCanvas6.clientHeight;
   }
 
   mainContainerClick(event: MouseEvent) {
@@ -144,14 +273,17 @@ export class LettersComponent implements AfterViewInit {
     const stamp = Math.round(date.getTime() / 1000);
     const name = `colonization-${year}${month}${day}_${stamp}`;
     const tempCanvas = document.createElement("canvas");
-    tempCanvas.width  = this.canvas.clientWidth;
-    tempCanvas.height = this.canvas.clientHeight;
+    tempCanvas.width  = this.letters.length * this.canvas0.clientWidth;
+    tempCanvas.height = this.canvas0.clientHeight;
     const tempCtx = tempCanvas.getContext("2d");
     if (tempCtx) {
-      tempCtx.drawImage(this.maskCanvas, 0, 0);
-      tempCtx.drawImage(this.canvas, 0, 0);
+      for (let i = 0; i < this.letters.length; i++) {
+        const cx = i * this.canvas0.clientWidth;
+        tempCtx.drawImage(this.viewers[i].getMaskCanvas(), cx, 0);
+        tempCtx.drawImage(this.viewers[i].getCanvas(), cx, 0);
+      }
     }
-    this.savePNG(tempCanvas.toDataURL("image/png", 1.0), name); 
+    this.savePNG(tempCanvas.toDataURL("image/png", 1.0), name);
   }
 
   private savePNG(path: string, name: string) {
@@ -167,14 +299,17 @@ export class LettersComponent implements AfterViewInit {
 
   private resetSimulation() {
     this.stopAndClearSimulation();
-    this.setupSimulation();
-    this.viewer.run();
+    this.setupSimulation(); //
+    for (let i = 0; i < this.maxMaskLength; i++) {
+      this.viewers[i].run();
+    }
   }
 
   private setupSimulation() {
-    this.viewer.model.randomizeInteriorAttractors(this.numAttractors);
-    this.viewer.model.randomizeInteriorNodesWithinCoordinatesInDivisions(
-      1, this.letters.length, 0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
+    for (let i = 0; i < this.letters.length; i++) {
+      this.viewers[i].model.randomizeInteriorAttractors(this.numAttractors);
+      this.viewers[i].model.randomizeInteriorNodes(1);
+    }
   }
 
   private showParametersMenu() {
@@ -188,9 +323,8 @@ export class LettersComponent implements AfterViewInit {
   }
 
   private clearMaskCanvas() {
-    const ctx = this.maskCanvas.getContext("2d");
-    if (ctx) {
-      ctx.clearRect(0, 0, this.maskCanvas.clientWidth, this.maskCanvas.clientHeight);
+    for (let i = 0; i < this.maxMaskLength; i++) {
+      this.viewers[i].clearMaskCanvas();
     }
   }
 
@@ -198,17 +332,25 @@ export class LettersComponent implements AfterViewInit {
     if (this.inputText.length > 0) {
       this.stopAndClearSimulation();
       await this.downloadLetterImages();
-      this.createMask();
-      this.initializeMask();
-      this.viewer.model = new ColonizationModel(this.mask.width, this.mask.height, this.mask, ColonizationMode.Open, false);
-      this.viewer.model.attractionRadius = this.attractionRadius;
-      this.viewer.model.absorptionRadius = this.absorptionRadius;
-      this.viewer.model.stepLength = this.stepLength;
-      this.viewer.showAbsorptionZone = false;
-      this.viewer.showAttractionZone = false;
-      this.viewer.showAttractors = false;
+      this.createMasks();
+      // setupModels
+      for (let i = 0; i < this.letters.length; i++) {
+        this.viewers[i].model = new ColonizationModel(this.masks[i].width, this.masks[i].height, this.masks[i], ColonizationMode.Open, false);
+        this.viewers[i].model.attractionRadius = this.attractionRadius;
+        this.viewers[i].model.absorptionRadius = this.absorptionRadius;
+        this.viewers[i].model.stepLength = this.stepLength;
+        this.viewers[i].showAbsorptionZone = false;
+        this.viewers[i].showAttractionZone = false;
+        this.viewers[i].showAttractors = false;
+      }
       this.setupSimulation();
-      this.viewer.run();
+      this.runSimulation();
+    }
+  }
+
+  private runSimulation() {
+    for (let i = 0; i < this.letters.length; i++) {
+      this.viewers[i].run();
     }
   }
 
@@ -229,26 +371,19 @@ export class LettersComponent implements AfterViewInit {
     }
   }
 
-  private createMask() {
+  private createMasks() {
     this.clearMaskCanvas();
-    const ctx = this.maskCanvas.getContext("2d");
-    const w = this.maskCanvas.clientWidth;
-    const h = this.maskCanvas.clientHeight;
     const n = this.letters.length;
-    if (ctx) {
-      for (let i = 0; i < n; i++) {
-        const img = this.letters[i];
-        const cw = i * w / n;
-        ctx.drawImage(img, 0, 0, img.width, img.height, cw, 0, w / n, h);
+    for (let i = 0; i < n; i++) {
+      const img = this.letters[i];
+      this.viewers[i].drawMaskImage(img);
+      const imgData = this.viewers[i].getMaskData();
+      if (imgData) {
+        this.masks[i] = Mask.fromImageData(imgData);
       }
     }
-  }
-
-  private initializeMask() {
-    const maskCtx = this.maskCanvas.getContext("2d");
-    if (maskCtx) {
-      const data = maskCtx.getImageData(0, 0, this.maskCanvas.clientWidth, this.maskCanvas.clientHeight);
-      this.mask  = Mask.fromImageData(data);
+    for (let i = n; i < this.maxMaskLength; i++) {
+      this.masks[i] = new Mask(0, 0);
     }
   }
 
@@ -263,7 +398,9 @@ export class LettersComponent implements AfterViewInit {
   }
 
   private stopSimulation() {
-    this.viewer.stop();
+    for (let i = 0; i < this.maxMaskLength; i++) {
+      this.viewers[i].stop();
+    }
   }
 
   private stopAndClearSimulation() {
@@ -272,7 +409,10 @@ export class LettersComponent implements AfterViewInit {
   }
 
   private clearSimulationElements() {
-    this.viewer.clearElements();
+    for (let i = 0; i < this.maxMaskLength; i++) {
+      this.viewers[i].clearElements();
+      this.viewers[i].clearCanvas();
+    }
   }
 
   introWindowClick(event: Event) {
@@ -321,8 +461,10 @@ export class LettersComponent implements AfterViewInit {
   }
 
   draw(event: Event) {
-    if (!this.viewer.isRunning) {
-      this.viewer.drawScene();
+    for (let i = 0; i < this.maxMaskLength; i++) {
+      if (!this.viewers[i].isRunning) {
+        this.viewers[i].drawScene();
+      }
     }
   }
   

@@ -4,29 +4,79 @@
   background-color: #002900;
 }
 
-#canvas {
-  width: 90%;
-  height: 80%;
-  outline: none;
-  position: absolute;
-  top:  0;
-  left: 0;
-  background-color: transparent;
-  z-index: 1;
+#colonization-container {
+  width: 80%;
+  height: 60%;
   display: block;
-  margin: 5%;
+  position: absolute;
+  top: 20%;
+  left: 10%;
 }
 
-#mask-canvas {
-  width: 90%;
-  height: 80%;
-  outline: none;
+.colonization-column {
+  width: calc(100% / 7);
+  height: 100%;
+}
+
+#column0 {
   position: absolute;
-  top:  0;
+  top: 0;
   left: 0;
+}
+
+#column1 {
+  position: absolute;
+  top: 0;
+  left: calc(100% / 7);
+}
+
+#column2 {
+  position: absolute;
+  top: 0;
+  left: calc(2 * 100% / 7);
+}
+
+#column3 {
+  position: absolute;
+  top: 0;
+  left: calc(3 * 100% / 7);
+}
+
+#column4 {
+  position: absolute;
+  top: 0;
+  left: calc(4 * 100% / 7);
+}
+
+#column5 {
+  position: absolute;
+  top: 0;
+  left: calc(5 * 100% / 7);
+}
+
+#column6 {
+  position: absolute;
+  top: 0;
+  left: calc(6 * 100% / 7);
+}
+
+.colonization-column canvas {
+  outline: none;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.colonization-canvas {
+  z-index: 1;
+  background-color: transparent;
+}
+
+.mask-canvas {
   z-index: 0;
-  display: block;
-  margin: 5%;
+  background-color: black;
 }
 
 #toolbar-top {
@@ -181,4 +231,22 @@
   height: 40px;
   width: 80px;
   margin: 20px;
+}
+
+.color-selector {
+  display: flex;
+  justify-content: flex-start;
+  height: auto;
+}
+
+.color-selector-label {
+  display: inline-block;
+  width: 100px;
+  line-height: 50px;
+  text-align: center;
+}
+
+.color-selector-input {
+  width: 50px;
+  height: 50px;
 }

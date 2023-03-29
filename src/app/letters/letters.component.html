@@ -1,7 +1,34 @@
 <div #mainContainer id="main-container" (click)="this.mainContainerClick($event)">
-  <canvas #canvas id="canvas" (click)="this.canvasClick($event)" (contextmenu)="this.canvasContextMenu($event)"> 
-  </canvas>
-  <canvas #maskCanvas id="mask-canvas"></canvas>
+  <div id="colonization-container">
+    <div class="colonization-column" id="column0">
+      <canvas #canvas0 class="colonization-canvas" (click)="this.canvasClick($event)" (contextmenu)="this.canvasContextMenu($event)"></canvas>
+      <canvas #maskCanvas0 class="mask-canvas"></canvas>
+    </div>
+    <div class="colonization-column" id="column1">
+      <canvas #canvas1 class="colonization-canvas" (click)="this.canvasClick($event)" (contextmenu)="this.canvasContextMenu($event)"></canvas>
+      <canvas #maskCanvas1 class="mask-canvas"></canvas>
+    </div>
+    <div class="colonization-column" id="column2">
+      <canvas #canvas2 class="colonization-canvas" (click)="this.canvasClick($event)" (contextmenu)="this.canvasContextMenu($event)"></canvas>
+      <canvas #maskCanvas2 class="mask-canvas"></canvas>
+    </div>
+    <div class="colonization-column" id="column3">
+      <canvas #canvas3 class="colonization-canvas" (click)="this.canvasClick($event)" (contextmenu)="this.canvasContextMenu($event)"></canvas>
+      <canvas #maskCanvas3 class="mask-canvas"></canvas>
+    </div>
+    <div class="colonization-column" id="column4">
+      <canvas #canvas4 class="colonization-canvas" (click)="this.canvasClick($event)" (contextmenu)="this.canvasContextMenu($event)"></canvas>
+      <canvas #maskCanvas4 class="mask-canvas"></canvas>
+    </div>
+    <div class="colonization-column" id="column5">
+      <canvas #canvas5 class="colonization-canvas" (click)="this.canvasClick($event)" (contextmenu)="this.canvasContextMenu($event)"></canvas>
+      <canvas #maskCanvas5 class="mask-canvas"></canvas>
+    </div>
+    <div class="colonization-column" id="column6">
+      <canvas #canvas6 class="colonization-canvas" (click)="this.canvasClick($event)" (contextmenu)="this.canvasContextMenu($event)"></canvas>
+      <canvas #maskCanvas6 class="mask-canvas"></canvas>
+    </div>
+  </div>
   <div id="toolbar-top">
     <button id="button-parameters-menu" type="button" class="toolbar-button" (click)="this.buttonParametersMenuClick($event)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
@@ -80,9 +107,57 @@
   </div>
   <form #visualizationMenu id="visualization-menu">
     <div class="color-selector">
-      <label class="color-selector-label">Segmento</label>
-      <input class="color-selector-input" id="branchColorInput" type="color"
-        [(ngModel)]="this.viewer.segmentColor"
+      <label class="color-selector-label">Letra 1</label>
+      <input class="color-selector-input" type="color"
+        [(ngModel)]="this.viewers[0].segmentColor"
+        [ngModelOptions]="{standalone: true}"
+        (ngModelChange)="this.draw($event)"
+      />
+    </div>
+    <div class="color-selector">
+      <label class="color-selector-label">Letra 2</label>
+      <input class="color-selector-input" type="color"
+        [(ngModel)]="this.viewers[1].segmentColor"
+        [ngModelOptions]="{standalone: true}"
+        (ngModelChange)="this.draw($event)"
+      />
+    </div>
+    <div class="color-selector">
+      <label class="color-selector-label">Letra 3</label>
+      <input class="color-selector-input" type="color"
+        [(ngModel)]="this.viewers[2].segmentColor"
+        [ngModelOptions]="{standalone: true}"
+        (ngModelChange)="this.draw($event)"
+      />
+    </div>
+    <div class="color-selector">
+      <label class="color-selector-label">Letra 4</label>
+      <input class="color-selector-input" type="color"
+        [(ngModel)]="this.viewers[3].segmentColor"
+        [ngModelOptions]="{standalone: true}"
+        (ngModelChange)="this.draw($event)"
+      />
+    </div>
+    <div class="color-selector">
+      <label class="color-selector-label">Letra 5</label>
+      <input class="color-selector-input" type="color"
+        [(ngModel)]="this.viewers[4].segmentColor"
+        [ngModelOptions]="{standalone: true}"
+        (ngModelChange)="this.draw($event)"
+      />
+    </div>
+    <div class="color-selector">
+      <label class="color-selector-label">Letra 6</label>
+      <input class="color-selector-input" type="color"
+        [(ngModel)]="this.viewers[5].segmentColor"
+        [ngModelOptions]="{standalone: true}"
+        (ngModelChange)="this.draw($event)"
+      />
+    </div>
+    <div class="color-selector">
+      <label class="color-selector-label">Letra 7</label>
+      <input class="color-selector-input" type="color"
+        [(ngModel)]="this.viewers[6].segmentColor"
         [ngModelOptions]="{standalone: true}"
         (ngModelChange)="this.draw($event)"
       />

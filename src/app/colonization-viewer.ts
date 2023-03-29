@@ -39,6 +39,21 @@ export class ColonizationViewer {
     }
   }
 
+  getCanvas(): HTMLCanvasElement {
+    return this.canvas;
+  }
+
+  getMaskCanvas(): HTMLCanvasElement {
+    return this.maskCanvas;
+  }
+
+  getMaskData(): ImageData | undefined {
+    if (this.maskCtx) {
+      return this.maskCtx.getImageData(0, 0, this.maskCanvas.clientWidth, this.maskCanvas.clientHeight);
+    }
+    return undefined;
+  }
+
   setCanvas(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.ctx = this.canvas.getContext("2d");
@@ -52,6 +67,12 @@ export class ColonizationViewer {
   clearCanvas() {
     if (this.ctx) {
       this.ctx.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
+    }
+  }
+
+  clearMaskCanvas() {
+    if (this.maskCtx) {
+      this.maskCtx.clearRect(0, 0, this.maskCanvas.clientWidth, this.maskCanvas.clientHeight);
     }
   }
 
