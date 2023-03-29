@@ -26,18 +26,31 @@
         </g>
       </svg>
     </button>
-    <button type="button" class="toolbar-button" (click)="this.buttonResetClick($event)">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
-        <g>
-          <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
-          <g>
-            <path class="svg-content" d="M15.49,40.79l5.72-3.39c-1.21-2.07-1.87-4.5-1.87-7.08,0-7.84,6.37-14.17,14.17-14.17s14.17,6.37,14.17,14.17-6.37,14.17-14.17,14.17v-6.43s-15.53,9.76-15.53,9.76l15.53,9.71v-6.43c11.48,0,20.85-9.36,20.85-20.85s-9.36-20.79-20.85-20.79S12.65,18.83,12.65,30.31c0,3.79,1.06,7.39,2.83,10.47h0Z"/>
-          </g>
-        </g>
-      </svg>
-    </button>
   </div>
   <div class="row">
+    <div class="column">
+      <div id="explanation-container">
+        <label id="label-body">
+          {{LandingStrings.LabelBody}}
+        </label>
+        <br>
+        <label id="label-body">
+          {{LandingStrings.LabelBody2}}
+        </label>
+        <br>
+        <label id="label-body">
+          {{LandingStrings.LabelBody3}}
+        </label>
+        <br>
+        <label id="label-body">
+          {{LandingStrings.LabelBody4}}
+        </label>
+        <br>
+        <label id="label-body">
+          {{LandingStrings.LabelBody5}}
+        </label>
+      </div>
+    </div>
     <div class="column">
       <div class="colonization-canvas-container">
         <canvas #leftCanvas class="colonization-canvas"></canvas>
@@ -80,31 +93,20 @@
         {{LandingStrings.StepLength}}
       </label>
     </div>
-    <div class="column">
-      <div id="explanation-container">
-        <label id="label-body">
-          {{LandingStrings.LabelBody}}
-        </label>
-        <br>
-        <label id="label-body">
-          {{LandingStrings.LabelBody2}}
-        </label>
-        <br>
-        <label id="label-body">
-          {{LandingStrings.LabelBody3}}
-        </label>
-        <br>
-        <label id="label-body">
-          {{LandingStrings.LabelBody4}}
-        </label>
-        <br>
-        <label id="label-body">
-          {{LandingStrings.LabelBody5}}
-        </label>
-      </div>
-    </div>
   </div>
   <img #maskImage id="mask-image" [src]="this.maskPath" (load)="this.maskImageLoad($event)" />
+  <div id="toolbar-bottom">
+    <button type="button" class="toolbar-button" (click)="this.buttonResetClick($event)">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67 67">
+        <g>
+          <rect class="svg-border" x="1.5" y="1.5" width="64" height="64" rx="8.27" ry="8.27"/>
+          <g>
+            <path class="svg-content" d="M15.49,40.79l5.72-3.39c-1.21-2.07-1.87-4.5-1.87-7.08,0-7.84,6.37-14.17,14.17-14.17s14.17,6.37,14.17,14.17-6.37,14.17-14.17,14.17v-6.43s-15.53,9.76-15.53,9.76l15.53,9.71v-6.43c11.48,0,20.85-9.36,20.85-20.85s-9.36-20.79-20.85-20.79S12.65,18.83,12.65,30.31c0,3.79,1.06,7.39,2.83,10.47h0Z"/>
+          </g>
+        </g>
+      </svg>
+    </button>
+  </div>
   <div id="navigation-bar">
     <button type="button" class="toolbar-button" [disabled]="true">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 65 65">

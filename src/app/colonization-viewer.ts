@@ -1,6 +1,6 @@
 import { Attractor } from "./attractor";
 import { Node } from "./node";
-import { ColonizationMode, ColonizationModel } from "./colonization-model";
+import { ColonizationModel } from "./colonization-model";
 import { sleep } from "./util";
 import { Mask } from "./mask";
 
@@ -75,13 +75,17 @@ export class ColonizationViewer {
   }
 
   async run(): Promise<void> {
+    let numSteps = 0;
     this.isRunning = true;
     while (this.isRunning) {
-      this.drawScene();
+      if (numSteps % 4 == 0) {
+        this.drawScene();
+      }
       if (!this.model.step()) {
         this.isRunning = false;
       }
       else {
+        numSteps++;
         this.isFresh = false;
       }
       await sleep(1);

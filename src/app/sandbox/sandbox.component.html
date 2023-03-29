@@ -1,5 +1,5 @@
-<div id="main-container" (mousedown)="this.mainContainerMouseDown($event)">
-  <canvas #canvas id="canvas" (mousedown)="this.canvasMouseDown($event)" (contextmenu)="this.canvasContextMenu($event)"> 
+<div #mainContainer id="main-container" (click)="this.mainContainerClick($event)">
+  <canvas #canvas id="canvas" (click)="this.canvasClick($event)" (contextmenu)="this.canvasContextMenu($event)"> 
   </canvas>
   <canvas #maskCanvas id="mask-canvas"></canvas>
   <img #maskImage id="mask-image" [src]="this.maskPath" (load)="this.maskImageLoad($event)" />

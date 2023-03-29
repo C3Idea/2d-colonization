@@ -14,6 +14,12 @@ import { Router } from '@angular/router';
 
 export class SandboxComponent implements AfterViewInit {
   SandboxStrings = SandboxStrings;
+
+  @ViewChild("mainContainer")
+  private mainContainerRef!: ElementRef;
+  private get mainContainer(): HTMLDivElement {
+    return this.mainContainerRef.nativeElement;
+  }
   
   @ViewChild("canvas")
   private canvasRef!: ElementRef;
@@ -253,7 +259,7 @@ export class SandboxComponent implements AfterViewInit {
     this.parametersMenu.style.display = 'none';
   }
 
-  canvasMouseDown(event: MouseEvent): void {
+  canvasClick(event: MouseEvent): void {
     if (this.parametersMenuVisible) {
       this.hideParametersMenu();
     }
@@ -344,13 +350,14 @@ export class SandboxComponent implements AfterViewInit {
     this.viewer.clearElements();
   }
 
-  mainContainerMouseDown(event: Event) {
-    if (this.parametersMenuVisible) {
-      this.hideParametersMenu();
-    }
-    if (this.visualizationMenuVisible) {
-      this.hideVisualizationMenu();
+  mainContainerClick(event: MouseEvent) {
+    if (event.target == this.mainContainer) {
+      if (this.parametersMenuVisible) {
+        this.hideParametersMenu();
+      }
+      if (this.visualizationMenuVisible) {
+        this.hideVisualizationMenu();
+      } 
     }
   }
-  
 }

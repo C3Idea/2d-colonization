@@ -7,11 +7,12 @@ import { SandboxComponent } from './sandbox/sandbox.component';
 const routes: Routes = [
   {
     path: "",
-    component: LandingComponent
+    redirectTo: "landing",
+    pathMatch: "full"
   },
   {
     path: "landing",
-    component: LandingComponent
+    component: LandingComponent,
   },
   {
     path: "sandbox",

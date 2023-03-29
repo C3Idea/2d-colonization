@@ -14,6 +14,12 @@ export class LettersComponent implements AfterViewInit {
 
   LettersStrings = LettersStrings;
 
+  @ViewChild("mainContainer")
+  private mainContainerRef!: ElementRef;
+  private get mainContainer(): HTMLDivElement {
+    return this.mainContainerRef.nativeElement;
+  }
+
   @ViewChild("canvas")
   private canvasRef!: ElementRef;
   private get canvas(): HTMLCanvasElement {
@@ -94,16 +100,18 @@ export class LettersComponent implements AfterViewInit {
     this.maskCanvas.height = this.maskCanvas.clientHeight;
   }
 
-  mainContainerMouseDown(event: Event) {
-    if (this.parametersMenuVisible) {
-      this.hideParametersMenu();
-    }
-    if (this.visualizationMenuVisible) {
-      this.hideVisualizationMenu();
+  mainContainerClick(event: MouseEvent) {
+    if (event.target == this.mainContainer) {
+      if (this.parametersMenuVisible) {
+        this.hideParametersMenu();
+      }
+      if (this.visualizationMenuVisible) {
+        this.hideVisualizationMenu();
+      } 
     }
   }
 
-  canvasMouseDown(event: Event) {
+  canvasClick(event: Event) {
     if (this.parametersMenuVisible) {
       this.hideParametersMenu();
     }
